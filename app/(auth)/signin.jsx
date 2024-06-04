@@ -1,7 +1,8 @@
 import { View, Text, ScrollView, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
+import { useNavigation } from 'expo-router'
 
 import FormField from "../../components/FormField"
 import CustomButton from "../../components/CustomButton"
@@ -14,8 +15,6 @@ export default SignIn = () => {
   const handleCheckboxChange = (newValue) => {
     setIsChecked(newValue);
   };
-
-
 
 
   const [form, setForm] = useState({
@@ -35,7 +34,7 @@ export default SignIn = () => {
 
           <FormField
             title="Email"
-            placeholder="Enter email Address"
+            placeholder="Email Address"
             label={form.email}
             handleChangeText={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
@@ -44,7 +43,7 @@ export default SignIn = () => {
 
           <FormField
             title="Password"
-            placeholder="Enter your password"
+            placeholder="Enter password"
             label={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-5"
@@ -54,7 +53,7 @@ export default SignIn = () => {
             title="Login"
             handlePress={() => { }}
             containerStyles="mt-7" />
-          <View className="flex-row justify-center items-center gap-4">
+          <View className="flex-row justify-center items-center gap-4 mt-2">
             <Text className="font-bold text-lg">Don't have an account?</Text>
             <Link href="/register" className="text-bgcolor font-bold text-lg underline ml-2">Sign up</Link>
           </View>

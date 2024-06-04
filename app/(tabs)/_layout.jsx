@@ -1,12 +1,16 @@
-import { Text, View, Image, Platform } from 'react-native'
+import { Text, View, Image, Platform, KeyboardAvoidingView } from 'react-native'
 import { Tabs, Redirect } from 'expo-router'
 import { Feather, Ionicons } from '@expo/vector-icons'
 
 
 export default TabsLayout = () => {
   return (
-    <>
-      <Tabs screenOptions={{tabBarShowLabel: false, tabBarStyle: {height: 70}}}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100} // Adjust the offset as needed
+    >
+      <Tabs screenOptions={{ tabBarShowLabel: false, tabBarStyle: { height: 70 } }}>
         <Tabs.Screen
           name='discover'
           options={{
@@ -50,17 +54,19 @@ export default TabsLayout = () => {
                 backgroundColor={focused ? "green" : "#5E5C5C"}
                 padding={10}
                 borderRadius={30}
-                style={{...Platform.select({
-                  android: {
-                    elevation : 8,
-                  }
-                },)}}
-                >
+                style={{
+                  ...Platform.select({
+                    android: {
+                      elevation: 8,
+                    }
+                  },)
+                }}
+              >
                 <Feather
                   name={focused ? "plus" : "plus"}
                   color={focused ? "white" : "white"}
                   size={24}
-                  />
+                />
               </View>
             )
           }}
@@ -98,6 +104,5 @@ export default TabsLayout = () => {
           }}
         />
       </Tabs>
-    </>
-  )
+    </KeyboardAvoidingView>)
 }

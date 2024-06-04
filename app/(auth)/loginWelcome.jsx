@@ -6,7 +6,7 @@ import { Link } from 'expo-router'
 import welcomeImg from "../../assets/images/welcome.png"
 import CustomButton from '../../components/CustomButton'
 
-const welcomeLogin = () => {
+export default function welcomeLogin () {
   return (
     <SafeAreaView>
       <ScrollView contentContainerStyle={{ height: '100%' }}>
@@ -22,12 +22,12 @@ const welcomeLogin = () => {
             <Text className="text-lg">Welcome to the Raffleit mobile app. Where excitement and opportunity collide!</Text>
 
             <CustomButton
-              title="Login"
+              title="Register"
               handlePress={() => { }}
               containerStyles="mt-7 mb-5" />
             <View className="flex-row justify-center items-center gap-4">
-              <Text className="font-bold text-lg">Don't have an account?</Text>
-              <Link href="/signin" className="text-bgcolor text-lg font-bold underline">Register</Link>
+              <Text className="font-bold text-lg">Already have an account ?</Text>
+              <Link href="/signin" className="text-bgcolor text-lg font-bold underline">Login</Link>
             </View>
           </View>
         </View>
@@ -35,7 +35,5 @@ const welcomeLogin = () => {
     </SafeAreaView>
   )
 }
-
-export default welcomeLogin
 
 const styles = StyleSheet.create({})
