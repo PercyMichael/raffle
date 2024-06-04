@@ -6,7 +6,7 @@ export default Menu = () => {
   return (
     <SafeAreaView>
       <View>
-        <Text>Profile</Text>
+        <Text></Text>
       </View>
     </SafeAreaView>
   )

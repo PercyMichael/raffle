@@ -2,7 +2,6 @@ import { Text, View, ScrollView, Image, TouchableOpacity, StyleSheet } from "rea
 import { useRouter, useNavigate, Link } from 'expo-router';
 import Onboarding from 'react-native-onboarding-swiper';
 import { StatusBar } from "expo-status-bar";
-import Register from "./(auth)/register";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FormField from "../components/FormField";
 import { useState } from "react";
@@ -21,24 +20,26 @@ export default function App() {
   return (
     <SafeAreaView>
       <View className="w-full h-full px-5">
-        <Text className="font-bold mt-2 text-2xl">What would you love to be addressed as?</Text>
-        <Text className="font-medium">Upload 2 photos to continue. Your first image will be your profile picture. 
-          Your second and third image will be used as your cover image. More changes 
-          can be mage in settings.</Text>
+        <Text className="font-bold mt-2 text-2xl">We would love to know a-little about you</Text>
+        {/* <Text className="font-bold text-gray-500">Tell us about yourself</Text> */}
         <FormField
-          title="Full Name"
+          title="Tell us about yourself"
           placeholder="Full name"
           label={form.name}
           handleChangeText={(e) => setForm({ ...form, name: e })}
-          otherStyles="mt-7"
+          otherStyles="mt-7 font-bold text-gray-500"
           keyboardType="email-address"
         />
-        <Link href="/album">Full Name</Link>
-        <View className="absolute bottom-10 w-full items-center">
-          <CustomButton
-            title="Continue"
-            handlePress={() => { }}
-            containerStyles="mt-7 w-3/4 justify-center items-center" />
+        <Link href="/discover">
+          Discover
+        </Link>
+        <View className="absolute bottom-10 w-full justify-center items-center">
+          <View className="justify-center items-center">
+            <CustomButton
+              title="Continue"
+              handlePress={() => { }}
+              containerStyles="mt-7 w-3/4" />
+          </View>
         </View>
       </View>
     </SafeAreaView>
