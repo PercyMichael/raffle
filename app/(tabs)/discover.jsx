@@ -1,8 +1,8 @@
-import { View, Text, ScrollView, StyleSheet, Image, TextInput, Key, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, TextInput, Pressable, Key, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import profImg from "../../assets/images/profile.png";
 import { useState } from 'react';
-import { Redirect, router } from 'expo-router';
+import { Redirect, router, Link } from 'expo-router';
 import CustomButton from '../../components/CustomButton';
 
 import Background from "../../assets/images/background.png"
@@ -19,11 +19,14 @@ const Discover = () => {
           <Text style={styles.headerText}>Discover</Text>
         </View>
         <View style={styles.profileContainer}>
-          <Ionicons
-            name="notifications"
-            color="black"
-            size={24}
-          />
+          <TouchableOpacity onPress={() => router.push('/notifications')}>
+            <Ionicons
+              name="notifications"
+              color="black"
+              size={24}
+            />
+          </TouchableOpacity>
+
           <Image
             source={profImg}
             style={styles.profileImage}
@@ -42,15 +45,6 @@ const Discover = () => {
       </View>
       <View className="p-4">
         <View>
-          {/* <ImageBackground
-            source={Background}
-            style={[styles.imageBackground, { height: 200 }]}
-            className="rounded"
-          >
-            <View style={styles.overlay}>
-              <Text style={styles.overlayText}>We stand united in the face of hunger</Text>
-            </View>
-          </ImageBackground> */}
         </View>
         <View style={styles.status} className="gap-2">
           <View className="p-2 bg-bgcolor rounded">

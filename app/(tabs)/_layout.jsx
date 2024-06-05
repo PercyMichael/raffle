@@ -2,6 +2,7 @@ import { Text, View, Image, Platform, KeyboardAvoidingView } from 'react-native'
 import { Tabs, Redirect } from 'expo-router'
 import { Feather, Ionicons } from '@expo/vector-icons'
 
+import ProfileImg from "../../assets/images/profile.png"
 
 export default TabsLayout = () => {
   return (
@@ -94,10 +95,14 @@ export default TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <View className="items-center">
-                <Ionicons
-                  name={focused ? "search" : "search-outline"}
+                <Image source={ProfileImg}
+                  style={{
+                    height: 35,
+                    width: 35,
+                    resizeMode: 'contain'
+                  }}
                   color={focused ? "green" : "#5E5C5C"}
-                  size={24} />
+                  className="rounded-full" />
                 <Text style={{ color: focused ? 'green' : '#5E5C5C', fontWeight: focused ? 'bold' : 'normal' }}>Menu</Text>
               </View>
             )

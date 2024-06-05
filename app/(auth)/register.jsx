@@ -1,25 +1,22 @@
-import { View, Text, ScrollView, Image } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link,useRouter } from 'expo-router'
+import { View, Text, ScrollView, Image } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, router } from 'expo-router';
 
-import FormField from "../../components/FormField"
-import CustomButton from "../../components/CustomButton"
-import Logo from "../../assets/images/raffleitapp.png"
+import FormField from "../../components/FormField";
+import CustomButton from "../../components/CustomButton";
+import Logo from "../../assets/images/raffleitapp.png";
 
-export default Register = () => {
-
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleCheckboxChange = (newValue) => {
-    setIsChecked(newValue);
-  };
-
-
+const Register = () => {
   const [form, setForm] = useState({
     email: '',
     password: ''
-  })
+  });
+
+  const handleRegister = () => {
+    // Add registration logic here
+    router.push('/discover');
+  };
 
   return (
     <SafeAreaView>
@@ -50,16 +47,18 @@ export default Register = () => {
 
           <CustomButton
             title="Register"
-            handlePress={() => { }}
-            containerStyles="mt-7" />
+            handlePress={handleRegister}
+            containerStyles="mt-7"
+          />
+
           <View className="flex-row justify-center items-center gap-4 mt-2">
-            <Text className="font-bold text-lg">Don't have an account?
-            </Text>
+            <Text className="font-bold text-lg">Don't have an account?</Text>
             <Link href="/signin" className="text-bgcolor text-lg font-bold underline">Login</Link>
-            <Link href="/loginWelcome" className="text-bgcolor text-lg font-bold underline">Welcome Login</Link>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
+
+export default Register;

@@ -9,7 +9,7 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
     lastname: '',
     password: ''
   });
-  const title = "Billing Address"; // Set the title as "Billing Address"
+  const title = "Account details";
 
   return (
     <ScrollView>
@@ -34,61 +34,45 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
           otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
         />
         <FormField
-          title="Company name"
+          title="Display name"
           placeholder="Last Name"
           label={form.lastname}
           handleChangeText={(e) => setForm({ ...form, lastname: e })}
           otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
         />
-        <FormField
-          title="Region"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
-        <FormField
-          title="Street address"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
-        <FormField
-          title="Town"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
-        <FormField
-          title="County"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
-        <FormField
-          title="Zip code"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
-        <FormField
-          title="Phone"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
+        <Text className="mb-3 font-medium text-gray-500">This is how your name will be displayed in the account section</Text>
         <FormField
           title="Email"
-          placeholder="Last Name"
+          placeholder="Email address"
           label={form.lastname}
           handleChangeText={(e) => setForm({ ...form, lastname: e })}
           otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
         />
+        <View className="mt-10">
+          <Text className="font-bold text-xl mb-2">Password Change</Text>
+          <FormField
+            title="Current password (leave blank to leave unchanged)"
+            placeholder="******"
+            label={form.lastname}
+            handleChangeText={(e) => setForm({ ...form, lastname: e })}
+            otherStyles={{ marginTop: 7, width: '100%' }}
+          />
+          <FormField
+            title="New password (leave blank to leave unchanged)"
+            placeholder="******"
+            label={form.lastname}
+            handleChangeText={(e) => setForm({ ...form, lastname: e })}
+            otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
+          />
+          <FormField
+            title="Confirm Password"
+            placeholder="******"
+            label={form.lastname}
+            handleChangeText={(e) => setForm({ ...form, lastname: e })}
+            otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
+          />
+        </View>
+
         <View className="justify-center items-center w-full">
           <TouchableOpacity onPress={() => router.push('/shipping')} className="w-3/4 bg-bgcolor rounded p-2 mt-4">
             <Text className="font-bold text-lg text-center text-secondary">Save changes</Text>

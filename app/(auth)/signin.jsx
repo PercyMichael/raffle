@@ -1,26 +1,24 @@
-import { View, Text, ScrollView, Image } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link, useRouter } from 'expo-router'
-import { useNavigation } from 'expo-router'
+import { View, Text, ScrollView, Image } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, useRouter } from 'expo-router';
 
-import FormField from "../../components/FormField"
-import CustomButton from "../../components/CustomButton"
-import Logo from "../../assets/images/raffleitapp.png"
+import FormField from "../../components/FormField";
+import CustomButton from "../../components/CustomButton";
+import Logo from "../../assets/images/raffleitapp.png";
 
-export default SignIn = () => {
-
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleCheckboxChange = (newValue) => {
-    setIsChecked(newValue);
-  };
-
-
+const SignIn = () => {
   const [form, setForm] = useState({
     email: '',
     password: ''
-  })
+  });
+
+  const router = useRouter();
+
+  const handleLogin = () => {
+    // Add login logic here
+    router.push('/discover');
+  };
 
   return (
     <SafeAreaView>
@@ -51,8 +49,10 @@ export default SignIn = () => {
 
           <CustomButton
             title="Login"
-            handlePress={() => { }}
-            containerStyles="mt-7" />
+            handlePress={handleLogin}
+            containerStyles="mt-7"
+          />
+
           <View className="flex-row justify-center items-center gap-4 mt-2">
             <Text className="font-bold text-lg">Don't have an account?</Text>
             <Link href="/register" className="text-bgcolor font-bold text-lg underline ml-2">Sign up</Link>
@@ -60,5 +60,7 @@ export default SignIn = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
+
+export default SignIn;

@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
+import { Redirect, router } from 'expo-router';
 import CustomButton from '../../components/CustomButton';
 import FormField from '../../components/FormField';
 
-const BillingAddress = ({ backgroundColor, textColor }) => {
+const PaymentMethod = ({ backgroundColor, textColor }) => {
   const [form, setForm] = useState({
     firstname: '',
     lastname: '',
     password: ''
   });
-  const title = "Billing Address"; // Set the title as "Billing Address"
+  const title = "Payment method"; // Set the title as "Billing Address"
 
   return (
     <ScrollView>
@@ -82,13 +82,7 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
           handleChangeText={(e) => setForm({ ...form, lastname: e })}
           otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
         />
-        <FormField
-          title="Email"
-          placeholder="Last Name"
-          label={form.lastname}
-          handleChangeText={(e) => setForm({ ...form, lastname: e })}
-          otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
-        />
+
         <View className="justify-center items-center w-full">
           <TouchableOpacity onPress={() => router.push('/shipping')} className="w-3/4 bg-bgcolor rounded p-2 mt-4">
             <Text className="font-bold text-lg text-center text-secondary">Save changes</Text>
@@ -100,7 +94,7 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
   );
 };
 
-export default BillingAddress;
+export default PaymentMethod;
 
 const styles = StyleSheet.create({
   container: {
