@@ -6,7 +6,7 @@ import Gamepad from "../../assets/images/pads.png";
 import ProfileImg from '../../assets/images/profile.png';
 import Laptop from "../../assets/images/laptop.png"
 
-export default function Raffle() {
+const Raffle = () => {
   return (
     <ScrollView>
       <View className="w-full">
@@ -298,3 +298,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default Raffle;

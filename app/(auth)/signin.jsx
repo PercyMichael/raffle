@@ -1,23 +1,66 @@
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, Platform } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
-
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import Logo from "../../assets/images/raffleitapp.png";
+import { login, loadUser } from "../../services/AuthService";
+
 
 const SignIn = () => {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  });
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [errors, setErrors] = useState({})
 
   const router = useRouter();
 
-  const handleLogin = () => {
-    // Add login logic here
-    router.push('/discover');
+  async function handleLogin() {
+    setErrors({});
+
+    try {
+      await login({
+        email,
+        password,
+        device_name: `${Platform.OS} ${Platform.Version}`
+      });
+
+
+      const user = await loadUser();
+
+      console.log(user);
+
+      // Handle the data and token here
+      // Store the token and navigate to another screen
+      router.replace('/discover');
+    }
+    catch (e) {
+      console.error('Error:', e);  // Log the error for debugging
+
+      // Check for common HTTP error status codes
+      if (e.response) {
+        const status = e.response.status;
+        if (status === 400) {
+          console.error('Bad Request:', e.response.data);
+        }
+        else if (status === 401) {
+          console.error('Unauthorized:', e.response.data);
+        }
+        else if (status === 422) {
+          console.error('Validation Error:', e.response.data);
+          setErrors(e.response.data.errors || {});
+        }
+        else {
+          console.error(`Error ${status}:`, e.response.data);
+        }
+      }
+      else if (e.request) {
+        console.error('No response received:', e.request);
+      }
+      else {
+        console.error('Error setting up request:', e.message);
+      }
+    }
   };
 
   return (
@@ -33,18 +76,21 @@ const SignIn = () => {
           <FormField
             title="Email"
             placeholder="Email Address"
-            label={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            label={email}
+            handleChangeText={(text) => setEmail(text)}
             otherStyles="mt-7"
             keyboardType="email-address"
+            errors={errors.email}
           />
 
           <FormField
             title="Password"
             placeholder="Enter password"
-            label={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
-            otherStyles="mt-5"
+            label={password}
+            handleChangeText={(text) => setPassword(text)}
+            otherStyles="mt-5 text-gray-500"
+            secureTextEntry={true}
+            errors={errors.password}
           />
 
           <CustomButton
@@ -61,6 +107,6 @@ const SignIn = () => {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 export default SignIn;

@@ -6,7 +6,7 @@ import { Link } from 'expo-router'
 import welcomeImg from "../../assets/images/welcome.png"
 import CustomButton from '../../components/CustomButton'
 
-export default function welcomeLogin () {
+const welcomeLogin = () => {
   return (
     <SafeAreaView>
       <ScrollView contentContainerStyle={{ height: '100%' }}>
@@ -35,5 +35,7 @@ export default function welcomeLogin () {
     </SafeAreaView>
   )
 }
+
+export default welcomeLogin;
 
 const styles = StyleSheet.create({})

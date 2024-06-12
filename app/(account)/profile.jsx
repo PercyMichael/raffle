@@ -10,7 +10,7 @@ import profileImg from "../../assets/images/profile1.png";
 import profImage from "../../assets/images/profile.png";
 import Laptop from "../../assets/images/laptop.png"
 
-export default function Profile() {
+const Profile = () => {
 
   return (
     // <SafeAreaView className="flex-1">
@@ -162,3 +162,5 @@ const styles = StyleSheet.create({
     width: '45%',
   }
 })
+
+export default Profile;

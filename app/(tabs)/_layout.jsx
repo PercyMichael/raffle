@@ -1,15 +1,15 @@
-import { Text, View, Image, Platform, KeyboardAvoidingView } from 'react-native'
+import { Text, View, Image, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native'
 import { Tabs, Redirect } from 'expo-router'
 import { Feather, Ionicons } from '@expo/vector-icons'
 
 import ProfileImg from "../../assets/images/profile.png"
 
-export default TabsLayout = () => {
+const TabsLayout = () => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100} // Adjust the offset as needed
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100}
     >
       <Tabs screenOptions={{ tabBarShowLabel: false, tabBarStyle: { height: 70 } }}>
         <Tabs.Screen
@@ -23,7 +23,8 @@ export default TabsLayout = () => {
                   name={focused ? "search" : "search-outline"}
                   color={focused ? "green" : "#5E5C5C"}
                   size={24} />
-                <Text style={{ color: focused ? 'green' : '#5E5C5C', fontWeight: focused ? 'bold' : 'normal' }}>Discover</Text>
+                <Text style={styles.tabText(focused)}>Discover</Text>
+
               </View>
             )
           }}
@@ -39,7 +40,7 @@ export default TabsLayout = () => {
                   name={focused ? "ticket" : "ticket-outline"}
                   color={focused ? "green" : "#5E5C5C"}
                   size={24} />
-                <Text style={{ color: focused ? 'green' : '#5E5C5C', fontWeight: focused ? 'bold' : 'normal' }}>Live Raffle</Text>
+                <Text style={styles.tabText(focused)}>Live raffle</Text>
               </View>
             )
           }}
@@ -53,7 +54,7 @@ export default TabsLayout = () => {
               <View className="items-center"
                 color='white'
                 backgroundColor={focused ? "green" : "#5E5C5C"}
-                padding={10}
+                padding={6}
                 borderRadius={30}
                 style={{
                   ...Platform.select({
@@ -83,7 +84,7 @@ export default TabsLayout = () => {
                   name={focused ? "notifications" : "notifications-outline"}
                   color={focused ? "green" : "#5E5C5C"}
                   size={24} />
-                <Text style={{ color: focused ? 'green' : '#5E5C5C', fontWeight: focused ? 'bold' : 'normal' }}>Notifications</Text>
+                <Text style={styles.tabText(focused)}>Notifications</Text>
               </View>
             )
           }}
@@ -97,13 +98,13 @@ export default TabsLayout = () => {
               <View className="items-center">
                 <Image source={ProfileImg}
                   style={{
-                    height: 35,
-                    width: 35,
+                    height: 30,
+                    width: 30,
                     resizeMode: 'contain'
                   }}
                   color={focused ? "green" : "#5E5C5C"}
                   className="rounded-full" />
-                <Text style={{ color: focused ? 'green' : '#5E5C5C', fontWeight: focused ? 'bold' : 'normal' }}>Menu</Text>
+                <Text style={styles.tabText(focused)}>Menu</Text>
               </View>
             )
           }}
@@ -111,3 +112,15 @@ export default TabsLayout = () => {
       </Tabs>
     </KeyboardAvoidingView>)
 }
+
+
+export default TabsLayout;
+
+const styles = StyleSheet.create({
+  tabText: (focused) => ({
+    color: focused ? 'green' : '#5E5C5C',
+    fontWeight: focused ? 'bold' : 'normal',
+    fontSize: 10,
+    marginTop: 1
+  }),
+});

@@ -7,7 +7,7 @@ import { Redirect, router } from 'expo-router';
 
 const data = [{ label: 'Example Item', value: '1' }];
 
-export default function LiveRaffle() {
+const LiveRaffle = () => {
 
 
 
@@ -122,6 +122,8 @@ export default function LiveRaffle() {
     </ScrollView>
   );
 }
+
+export default LiveRaffle;
 
 const styles = StyleSheet.create({
   searching: {

@@ -1,22 +1,72 @@
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, Platform } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, router } from 'expo-router';
+import { Link, router, useRouter } from 'expo-router';
+import axios from '../../utils/axios';
+import Dropdown from '../../components/dropdown';
+import { register, loadUser } from "../../services/AuthService";
 
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import Logo from "../../assets/images/raffleitapp.png";
 
 const Register = () => {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  });
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [password_confirmation, setPasswordConfirmation] = useState("")
+  const [selectedValue, setSelectedValue] = useState('');
+  const [errors, setErrors] = useState({})
 
-  const handleRegister = () => {
-    // Add registration logic here
-    router.push('/discover');
+  const router = useRouter();
+
+
+  const handleSelect = (value) => {
+    setSelectedValue(value);
   };
+
+
+
+  async function handleRegister() {
+    setErrors({});
+
+    try {
+      const userData = {
+        email,
+        password,
+        password_confirmation,
+        selectedValue: selectedValue === 'Host' ? 1 : 0, // Assign integer values based on selected value
+        device_name: `${Platform.OS} ${Platform.Version}`,
+        user_type: 1 // Assign an integer value for user_type
+      };
+
+      // Call the register function
+      const user = await register(userData);
+
+      // Handle successful registration
+      console.log('User registered successfully:', user);
+
+      // Navigate to another screen, etc.
+      router.replace('/discover');
+    } catch (error) {
+      console.error('Error registering user:', error);
+
+      // Handle registration errors
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 422) {
+          console.error('Validation Error:', error.response.data);
+          setErrors(error.response.data.errors || {});
+        } else {
+          console.error(`Error ${status}:`, error.response.data);
+        }
+      } else {
+        console.error('Error setting up request:', error.message);
+      }
+    }
+  };
+
+
+
 
   return (
     <SafeAreaView>
@@ -31,18 +81,39 @@ const Register = () => {
           <FormField
             title="Email"
             placeholder="Email Address"
-            label={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            label={email}
+            handleChangeText={(text) => setEmail(text)}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
 
+          <View>
+            <Text className="mt-4 font-bold text-base">Selected Value: {selectedValue}</Text>
+            <Dropdown
+              options={['Host']}
+              onSelect={handleSelect}
+              handleChangeText={(text) => setSelectedValue(text)}
+              defaultValue="User"
+            />
+          </View>
+
+
           <FormField
             title="Password"
             placeholder="Enter password"
-            label={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            label={password}
+            handleChangeText={(text) => setPassword(text)}
             otherStyles="mt-5"
+            secureTextEntry={true}
+          />
+
+          <FormField
+            title="Confirm Password"
+            placeholder="Enter password"
+            label={password_confirmation}
+            handleChangeText={(text) => setPasswordConfirmation(text)}
+            otherStyles="mt-5"
+            secureTextEntry={true}
           />
 
           <CustomButton

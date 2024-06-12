@@ -9,6 +9,7 @@ module.exports = {
         bgcolor: '#55C595',
         btncolor: '#FFFFFF',
         txtcolor: '#282828',
+        paymentbg: '#E2DFDF',
         bglight: '#55C59566',
         darkbg: '#028374',
         actionbtn: '#F1F2F7',

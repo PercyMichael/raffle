@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Link } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomText from '../../constants/fonts'
 // import FormField from '../../components/FormField'
 
-export default function Album() {
-    const [form, setForm] = useState({
+const Album = () => {
+  const [form, setForm] = useState({
     name: '',
   })
 
@@ -36,3 +36,5 @@ export default function Album() {
     </SafeAreaView>
   )
 }
+
+export default Album;

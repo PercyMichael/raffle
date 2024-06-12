@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 
-export default function mobileNumber() {
+const mobileNumber = () => {
   const [form, setForm] = useState({
     nnumber: '',
   })
@@ -33,3 +33,5 @@ export default function mobileNumber() {
     </SafeAreaView>
   )
 }
+
+export default mobileNumber;

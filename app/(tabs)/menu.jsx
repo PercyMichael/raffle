@@ -81,7 +81,7 @@ const Menu = () => {
             </Pressable>
           </View>
           <View style={styles.ticket}>
-            <Pressable onPress={() => router.push('/payment')} style={styles.icon} className="p-2 rounded"
+            <Pressable onPress={() => router.push('(account)/payment')} style={styles.icon} className="p-2 rounded"
             >
               <Ionicons
                 name="wallet"
@@ -129,6 +129,7 @@ const Menu = () => {
     </ScrollView >
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

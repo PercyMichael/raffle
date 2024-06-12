@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar'
 import CustomButton from '../../components/CustomButton'
 import happyImg from "../../assets/images/happy.png"
 
-export default accountCreated = () => {
+const accountCreated = () => {
   return (
     <SafeAreaView>
       <ScrollView contentContainerStyle={{ height: '100%' }}>
@@ -29,5 +29,6 @@ export default accountCreated = () => {
     </SafeAreaView>
   )
 }
+export default accountCreated;
 
 const styles = StyleSheet.create({})

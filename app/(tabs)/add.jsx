@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-export default Add = () => {
+const Add = () => {
   return (
     <SafeAreaView>
       <View>
@@ -11,3 +11,5 @@ export default Add = () => {
     </SafeAreaView>
   )
 }
+
+export default Add;

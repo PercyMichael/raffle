@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Redirect, router } from 'expo-router';
 
 import OnboardingImg from "../assets/images/onboard.png";
-import Logo from "../assets/images/logo.png"
+import Logo from "../assets/images/logo.png";
 
-export default function OnboardingScreen() {
+const OnboardingScreen = () => {
   return (
     <SafeAreaView className="bg-primary">
       <View>
@@ -42,6 +42,8 @@ export default function OnboardingScreen() {
     </SafeAreaView>
   );
 }
+
+export default OnboardingScreen;
 
 const styles = StyleSheet.create({
   title: {

@@ -5,13 +5,9 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import Mastercard from "../../assets/images/mastercard.png"
 
-const PaymentMethod = ({ backgroundColor, textColor }) => {
-  const [form, setForm] = useState({
-    firstname: '',
-    lastname: '',
-    password: ''
-  });
-  const title = "Payment method";
+const Help = ({ backgroundColor, textColor }) => {
+
+  const title = "Help & suport";
 
   return (
     <ScrollView>
@@ -20,23 +16,29 @@ const PaymentMethod = ({ backgroundColor, textColor }) => {
       </View>
       <View style={styles.container}>
         <View className="p-4">
-          <View className="justify-center items-center w-full">
+          <Text className="font-bold text-lg">General</Text>
+          <View className="w-full">
+            <TouchableOpacity onPress={() => router.push('/report')} className="w-full bg-paymentbg rounded-lg p-2 mt-4">
+              <View style={styles.payment}>
+                <Ionicons
+                  name="flag"
+                  color="gray"
+                  size={25}
+                />
+                <Text className="font-medium text-lg text-gray-500 ml-4">Report a problem</Text>
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('')} className="w-full bg-paymentbg rounded-lg p-2 mt-4">
               <View style={styles.payment}>
-                <Image source={Mastercard} style={{
-                  height: 35,
-                  width: 35,
-                  resizeMode: 'contain'
-                }} />
-                <Text className="font-bold text-lg text-primary ml-4">2343 2337 8778 6789</Text>
+                <FontAwesome
+                  name="book"
+                  color="gray"
+                  size={25}
+                />
+                <Text className="font-medium text-lg text-gray-500 ml-4">Terms & Policies</Text>
               </View>
             </TouchableOpacity>
           </View>
-        </View>
-        <View className="justify-center items-center w-full">
-          <TouchableOpacity onPress={() => router.push('')} className="w-3/4 border border-gray-700 rounded-lg p-2 mt-4">
-            <Text className="font-bold text-lg text-center text-primary">Add new method</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -44,7 +46,7 @@ const PaymentMethod = ({ backgroundColor, textColor }) => {
   );
 };
 
-export default PaymentMethod;
+export default Help;
 
 const styles = StyleSheet.create({
   container: {
