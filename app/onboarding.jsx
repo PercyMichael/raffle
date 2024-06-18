@@ -3,7 +3,6 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Redirect, router } from 'expo-router';
 
-import OnboardingImg from "../assets/images/onboard.png";
 import Logo from "../assets/images/logo.png";
 
 const OnboardingScreen = () => {
@@ -11,12 +10,10 @@ const OnboardingScreen = () => {
     <SafeAreaView className="bg-primary">
       <View>
         <View className="w-full h-full justify-center items-center px-5">
-          <Image source={Logo}
-            style={{
-              width: 200,
-              height: 72,
-              resizeMode: "contain"
-            }} />
+          <Image source={Logo} style={{
+            width: 100, height: 80,
+            resizeMode: 'contain'
+          }} />
           {/* <Text className="mt-5 text-txtcolor" style={styles.title}>Win a Raffle Prize!</Text>
           <Text className="mt-2 text-gray-500 font-medium" style={styles.subtitle}>Unveil the excitement and elevate your experience as
             you stand a chance to win a coveted Raffle Prize!.</Text> */}

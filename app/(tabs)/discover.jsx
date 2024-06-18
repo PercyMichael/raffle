@@ -1,11 +1,10 @@
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, TextInput, Pressable, Key, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import profImg from "../../assets/images/profile.png";
 import { useState } from 'react';
-import { Redirect, router, Link } from 'expo-router';
+import { router } from 'expo-router';
 import CustomButton from '../../components/CustomButton';
 
-import Background from "../../assets/images/background.png"
 import Laptop from "../../assets/images/laptop.png"
 
 
@@ -27,9 +26,12 @@ const Discover = () => {
             />
           </TouchableOpacity>
 
+
           <Image
             source={profImg}
             style={styles.profileImage}
+            resizeMode='cover'
+            onError={(error) => console.log('Local image failed to load', error.nativeEvent.error)}
           />
         </View>
       </View>
@@ -85,7 +87,8 @@ const Discover = () => {
                 <Image source={Laptop}
                   style={{
                     width: '100%',
-                    height: 200
+                    height: 200,
+                    resizeMode: "contain"
                   }} className="rounded" />
                 <View className="p-2">
                   <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
@@ -262,7 +265,6 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     flex: 1,
-    resizeMode: 'cover',
     justifyContent: 'center',
   },
   overlay: {
