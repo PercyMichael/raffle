@@ -90,9 +90,9 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name='menu'
+          name='profile'
           options={{
-            title: "Menu",
+            title: "Profile",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <View className="items-center">
@@ -104,7 +104,7 @@ const TabsLayout = () => {
                   }}
                   color={focused ? "green" : "#5E5C5C"}
                   className="rounded-full" />
-                <Text style={styles.tabText(focused)}>Menu</Text>
+                <Text style={styles.tabText(focused)}>Profile</Text>
               </View>
             )
           }}

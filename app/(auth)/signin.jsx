@@ -8,6 +8,7 @@ import Logo from "../../assets/images/raffleitapp.png";
 import { login, loadUser } from "../../services/AuthService";
 
 
+
 const SignIn = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -17,6 +18,7 @@ const SignIn = () => {
 
   async function handleLogin() {
     setErrors({});
+    // setLoading(true);
 
     try {
       await login({
@@ -24,8 +26,7 @@ const SignIn = () => {
         password,
         device_name: `${Platform.OS} ${Platform.Version}`
       });
-
-
+      
       const user = await loadUser();
 
       console.log(user);

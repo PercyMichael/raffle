@@ -17,7 +17,7 @@ const Settings = ({ backgroundColor, textColor }) => {
         <View className="p-4">
           <Text className="font-bold text-lg">Account</Text>
           <View className="w-full">
-            <TouchableOpacity onPress={() => router.push('')} className="w-full bg-paymentbg rounded-lg p-2 mt-4">
+            <TouchableOpacity onPress={() => router.push('/update_register')} className="w-full bg-paymentbg rounded-lg p-2 mt-4">
               <View style={styles.payment}>
                 <Ionicons
                   name="person-circle-outline"
@@ -54,11 +54,7 @@ const Settings = ({ backgroundColor, textColor }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <View className="justify-center items-center w-full">
-          <TouchableOpacity onPress={() => router.push('')} className="w-3/4 border border-gray-700 rounded-lg p-2 mt-4">
-            <Text className="font-bold text-lg text-center text-primary">Add new method</Text>
-          </TouchableOpacity>
-        </View> */}
+   
       </View>
 
     </ScrollView>

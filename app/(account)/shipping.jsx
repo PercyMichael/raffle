@@ -1,8 +1,39 @@
 import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { Redirect, router } from 'expo-router';
-import CustomButton from '../../components/CustomButton';
+import { router } from 'expo-router';
 import FormField from '../../components/FormField';
+
+
+const PageHeader = ({ title }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const userData = await loadUser(); // Assume loadUser is defined elsewhere and fetches user data
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to load user:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  return (
+    <View className="p-4 flex-row shadow-lg gap-6 items-center">
+      {/* Optional Icon on the Left */}
+      <Ionicons name="chevron-back" size={24} color="black" className="mr-2" />
+
+      {/* Header Title */}
+      <Text className="text-black text-xl font-semibold">{title}</Text>
+
+    </View>
+  );
+};
 
 const ShippingAddress = ({ backgroundColor, textColor }) => {
   const [form, setForm] = useState({
@@ -14,6 +45,11 @@ const ShippingAddress = ({ backgroundColor, textColor }) => {
 
   return (
     <ScrollView>
+      
+      <View style={styles.container}>
+        <PageHeader title="Create a Raffle" />
+      </View>
+
       <View style={{ backgroundColor: backgroundColor, paddingVertical: 10, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
         <Text style={[styles.statusTitlle, { color: textColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center' }]}>{title}</Text>
@@ -83,7 +119,7 @@ const ShippingAddress = ({ backgroundColor, textColor }) => {
           handleChangeText={(e) => setForm({ ...form, lastname: e })}
           otherStyles={{ marginTop: 7, width: '100%' }} // Set width to 100%
         />
-        
+
         <View className="justify-center items-center w-full">
           <TouchableOpacity onPress={() => router.push('/shipping')} className="w-3/4 bg-bgcolor rounded p-2 mt-4">
             <Text className="font-bold text-lg text-center text-secondary">Save changes</Text>

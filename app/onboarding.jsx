@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Redirect, router } from 'expo-router';
+import { router } from 'expo-router';
 
 import Logo from "../assets/images/logo.png";
 
@@ -11,7 +11,7 @@ const OnboardingScreen = () => {
       <View>
         <View className="w-full h-full justify-center items-center px-5">
           <Image source={Logo} style={{
-            width: 100, height: 80,
+            width: 120, height: 40,
             resizeMode: 'contain'
           }} />
           {/* <Text className="mt-5 text-txtcolor" style={styles.title}>Win a Raffle Prize!</Text>
