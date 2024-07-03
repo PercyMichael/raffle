@@ -89,3 +89,55 @@ export async function create_organisation(orgData) {
     throw error;
   }
 }
+
+export async function create_fundraising(fundData) {
+  try {
+    const token = await getToken(); // Retrieve authentication token
+
+    const response = await axios.post('/fundraising', fundData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Fundraiser created successfully:', response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error('Error creating fundraiser:', error);
+    if (error.response) {
+      console.error('API Response:', error.response.data);
+      Alert.alert('Error', `Failed to create fundraiser: ${error.response.data.message}`);
+    } else {
+      Alert.alert('Error', 'Failed to create fundraiser. Please try again later.');
+    }
+    throw error;
+  }
+}
+
+export async function create_raffle(raffleData) {
+  try {
+    const token = await getToken(); // Retrieve authentication token
+
+    const response = await axios.post('/create_raffle', raffleData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Raffle created successfully:', response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error('Error creating Raffle:', error);
+    if (error.response) {
+      console.error('API Response:', error.response.data);
+      Alert.alert('Error', `Failed to create Raffle: ${error.response.data.message}`);
+    } else {
+      Alert.alert('Error', 'Failed to create raffle. Please try again later.');
+    }
+    throw error;
+  }
+}

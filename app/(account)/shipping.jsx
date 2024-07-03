@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import FormField from '../../components/FormField';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const PageHeader = ({ title }) => {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity,ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import CustomButton from '../../components/CustomButton';
 import { router } from 'expo-router';
@@ -14,7 +14,7 @@ const PageHeader = ({ title, onBackPress }) => (
 
 function handleCreateRaffle() {
   console.log('Navigating to the raffle creation page...');
-  router.push('/organisation')
+  router.push('/addraffle')
 }
 
 

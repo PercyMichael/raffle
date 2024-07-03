@@ -70,7 +70,7 @@ const Register = () => {
         last_name,
         about,
         username,
-        // image
+        image
       };
 
       console.log('User data to register:', userData);

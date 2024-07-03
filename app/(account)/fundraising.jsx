@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox } from 'react-native-elements';
 import FormField from '../../components/FormField';
-import { loadUser } from '../../services/AuthService';
-import { router } from 'expo-router'; // Verify import
+import CustomButton from '../../components/CustomButton'; // Ensure this is imported correctly
+import { useRouter } from 'expo-router';
+import { loadUser, create_fundraising } from '../../services/AuthService'; // Adjust paths as necessary
 
 const PageHeader = ({ title }) => {
   const [user, setUser] = useState(null);
@@ -13,7 +14,7 @@ const PageHeader = ({ title }) => {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const userData = await loadUser(); // Implement loadUser function
+        const userData = await loadUser();
         setUser(userData);
       } catch (error) {
         console.error('Failed to load user:', error);
@@ -26,14 +27,14 @@ const PageHeader = ({ title }) => {
   }, []);
 
   return (
-    <View style={styles.header} className="gap-4">
+    <View style={styles.header}>
       <Ionicons name="chevron-back" size={24} color="black" style={styles.icon} />
       <Text style={styles.headerTitle}>{title}</Text>
     </View>
   );
 };
 
-const Fundraising = ({ backgroundColor, textColor }) => {
+const Fundraising = ({ backgroundColor = '#fff', textColor = '#000' }) => {
   const [checked, setChecked] = useState(false);
   const [name, setName] = useState('');
   const [co, setCO] = useState('');
@@ -42,7 +43,58 @@ const Fundraising = ({ backgroundColor, textColor }) => {
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [zipcode, setZipcode] = useState('');
-  
+  const [phone, setPhone] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const router = useRouter();
+
+  const handleFundraiser = async () => {
+    // Reset errors
+    setErrors({});
+
+    // Frontend validation
+    if (!name || !co || !address || !city || !state || !zipcode || !phone) {
+      Alert.alert('Error', 'All fields except Address Line 2 are required.');
+      return;
+    }
+
+    if (!checked) {
+      Alert.alert('Error', 'You must agree to the terms and conditions.');
+      return;
+    }
+
+    try {
+      const fundData = {
+        name,
+        co,
+        address,
+        addressline,
+        city,
+        state,
+        zipcode,
+        phone,
+      };
+
+      console.log('Fundraiser data to register:', fundData);
+
+      const response = await create_fundraising(fundData);
+
+      console.log('API response:', response);
+
+      // Check for the 'message' property in the response
+      if (response.message && response.message.includes("successfully")) {
+        console.log('Fundraiser registered successfully:', response.data);
+        router.replace('/addraffle');
+      } else {
+        console.log('Fundraiser registration failed:', response.message);
+        Alert.alert('Error', `Failed to register organisation: ${response.message}`);
+      }
+    } catch (error) {
+      console.error('Error registering organisation:', error);
+      Alert.alert('Error', 'Failed to register organisation. Please try again.');
+    }
+
+  };
 
   return (
     <ScrollView>
@@ -50,13 +102,13 @@ const Fundraising = ({ backgroundColor, textColor }) => {
         <PageHeader title="Create a Raffle" />
       </View>
 
-      <View className="p-4">
+      <View style={styles.form}>
         <View style={[styles.statusBar, { backgroundColor }]}>
           <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
           <Text style={[styles.statusTitle, { color: textColor }]}>Fundraising Check Address</Text>
         </View>
 
-        <View style={styles.container}>
+        <View style={styles.formContainer}>
           <FormField
             title="Name"
             placeholder="Name"
@@ -66,7 +118,7 @@ const Fundraising = ({ backgroundColor, textColor }) => {
             errors={errors.name}
           />
           <FormField
-            title="CO"
+            title="Contact Person"
             placeholder="C/O"
             value={co}
             handleChangeText={setCO}
@@ -79,7 +131,7 @@ const Fundraising = ({ backgroundColor, textColor }) => {
             value={address}
             handleChangeText={setAddress}
             otherStyles={styles.formField}
-            errors={errors.co}
+            errors={errors.address}
           />
           <FormField
             title="Address Line 2"
@@ -121,49 +173,6 @@ const Fundraising = ({ backgroundColor, textColor }) => {
             otherStyles={styles.formField}
             errors={errors.phone}
           />
-          <FormField
-            title="Address"
-            placeholder="First Name"
-            value={form.firstname}
-            onChangeText={(text) => setForm({ ...form, firstname: text })}
-            style={styles.input}
-          />
-          <FormField
-            title="Address Line 2"
-            placeholder="First Name"
-            value={form.firstname}
-            onChangeText={(text) => setForm({ ...form, firstname: text })}
-            style={styles.input}
-          />
-          <FormField
-            title="City"
-            placeholder="First Name"
-            value={form.firstname}
-            onChangeText={(text) => setForm({ ...form, firstname: text })}
-            style={styles.input}
-          />
-          <FormField
-            title="State"
-            placeholder="First Name"
-            value={form.firstname}
-            onChangeText={(text) => setForm({ ...form, firstname: text })}
-            style={styles.input}
-          />
-          <FormField
-            title="Zip code"
-            placeholder="First Name"
-            value={form.firstname}
-            onChangeText={(text) => setForm({ ...form, firstname: text })}
-            style={styles.input}
-          />
-          
-          <FormField
-            title="Phone Number"
-            placeholder="First Name"
-            value={form.firstname}
-            onChangeText={(text) => setForm({ ...form, firstname: text })}
-            style={styles.input}
-          />
 
           <CheckBox
             title="I have read and agree to the Terms and Conditions"
@@ -173,11 +182,12 @@ const Fundraising = ({ backgroundColor, textColor }) => {
             textStyle={styles.checkboxText}
           />
 
-          <TouchableOpacity onPress={() => router.push('/shipping')} style={styles.button} className="bg-bgcolor">
-            <Text style={styles.buttonText}>Proceed</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title="Register"
+            handlePress={handleFundraiser}
+            containerStyles={styles.button}
+          />
         </View>
-
       </View>
     </ScrollView>
   );
@@ -213,9 +223,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  input: {
-    marginTop: 10,
-    width: '100%',
+  form: {
+    padding: 16,
+  },
+  formContainer: {
+    paddingVertical: 20,
+  },
+  formField: {
+    marginVertical: 8,
   },
   checkboxContainer: {
     backgroundColor: 'transparent',
@@ -224,15 +239,12 @@ const styles = StyleSheet.create({
   checkboxText: {
     fontSize: 16,
   },
-  label: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
   button: {
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
     alignItems: 'center',
+    backgroundColor: '#6200EE',
   },
   buttonText: {
     fontSize: 18,

@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Link } from 'expo-router';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import Logo from '../../assets/images/raffleitapp.png';
 import { updateUserDetails, loadUser } from '../../services/AuthService';
 
 const AccountDetails = ({ backgroundColor, textColor }) => {

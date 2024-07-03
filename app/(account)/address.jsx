@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StatusBar, StyleSheet } from 'react-native';
 import React from 'react';
-import { Redirect, router, useRouter } from 'expo-router';
+import { router } from 'expo-router';
 
 const Address = ({ backgroundColor, textColor }) => {
   const title = "Address"; // Set the title as "Address"

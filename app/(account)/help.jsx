@@ -3,7 +3,6 @@ import { StyleSheet, Text, TextInput, ScrollView, View, TouchableOpacity, Image 
 import { Redirect, router } from 'expo-router';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
-import Mastercard from "../../assets/images/mastercard.png"
 
 const Help = ({ backgroundColor, textColor }) => {
 

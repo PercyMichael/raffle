@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Image, ScrollView, Text, FlatList, StyleSheet } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons'
 
-import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomButton from '../../components/CustomButton';
 
 
