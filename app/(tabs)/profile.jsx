@@ -56,7 +56,7 @@ const Menu = () => {
         ) : user ? (
           <View style={styles.about}>
             <Image
-              source={user.profile_pix ? { uri: user.profile_pix } : profileImg}
+              source={user.image ? { uri: user.image } : profileImg}
               style={styles.profileImage}
             />
             <View style={styles.textContainer}>
@@ -89,7 +89,7 @@ const Menu = () => {
             </Pressable>
           </View>
           <View style={styles.ticket}>
-            <Pressable onPress={() => router.push('(account)/payment')} style={styles.icon}>
+            <Pressable onPress={() => router.push('account/payment')} style={styles.icon}>
               <Ionicons name="wallet" color="green" size={30} />
               <Text style={styles.menuText}>Payment method</Text>
             </Pressable>

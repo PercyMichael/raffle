@@ -31,11 +31,11 @@ const Address = ({ backgroundColor, textColor }) => {
   );
 };
 
+export default Address;
+
 const styles = StyleSheet.create({
   statusTitlle: {
     justifyContent: 'center',
     alignItems: 'center'
   },
 });
-
-export default Address;

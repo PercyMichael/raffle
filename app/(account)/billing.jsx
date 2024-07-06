@@ -41,6 +41,8 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
   );
 };
 
+export default BillingAddress;
+
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
@@ -71,4 +73,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BillingAddress;

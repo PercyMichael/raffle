@@ -1,27 +1,29 @@
-// import { Text, View, ScrollView, Image, TouchableOpacity, StyleSheet } from "react-native";
-// import { useRouter, useNavigate, Link } from 'expo-router';
-// import Onboarding from 'react-native-onboarding-swiper';
-// import { StatusBar } from "expo-status-bar";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import FormField from "../components/FormField";
-// import { useState } from "react";
-// import CustomButton from "../components/CustomButton";
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
+// import OnboardingStack from './app/routes/OnboardingStack';
+// import AuthStack from './app/routes/AuthStack';
+// import HomeStack from './app/routes/HomeStack'; // Ensure this import is correct
 
+// const MainStack = createStackNavigator();
 
-// const onboardImg = require("../assets/images/winner.png")
-// const supportImg = require("../assets/images/support.png")
-// const hostImg = require("../assets/images/host.png")
+// const App = () => (
+//   <NavigationContainer>
+//     <MainStack.Navigator screenOptions={{ headerShown: false }}>
+//       <MainStack.Screen
+//         name="Onboarding"
+//         children={(props) => <OnboardingStack {...props} />}
+//       />
+//       <MainStack.Screen
+//         name="Auth"
+//         children={(props) => <AuthStack {...props} />}
+//       />
+//       <MainStack.Screen
+//         name="Home"
+//         children={(props) => <HomeStack {...props} />}
+//       />
+//     </MainStack.Navigator>
+//   </NavigationContainer>
+// );
 
-
-// export default function App() {
-//   const [form, setForm] = useState({
-//     name: '',
-//   })
-//   return (
-//     <SafeAreaView>
-//       <View>
-//         <Text>Hello</Text>
-//       </View>
-//     </SafeAreaView>
-//   )
-// }
+// export default App;

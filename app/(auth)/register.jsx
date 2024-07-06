@@ -20,7 +20,7 @@ const Register = () => {
   const [last_name, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [about, setAbout] = useState('');
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState('');
   const [errors, setErrors] = useState({});
 
   const router = useRouter();
@@ -56,6 +56,8 @@ const Register = () => {
 
     if (password !== password_confirmation) {
       setErrors(prev => ({ ...prev, password_confirmation: "Passwords do not match." }));
+      console.log("Passwords do not match");
+      Alert.alert('Passwords do not match');
       return;
     }
 
@@ -70,7 +72,7 @@ const Register = () => {
         last_name,
         about,
         username,
-        image
+        image,
       };
 
       console.log('User data to register:', userData);

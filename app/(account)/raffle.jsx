@@ -1,301 +1,344 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, FlatList } from 'react-native';
 import CustomButton from '../../components/CustomButton';
+import { loadRaffle, loadUser } from '../../services/AuthService';
 
 import Gamepad from "../../assets/images/pads.png";
 import ProfileImg from '../../assets/images/profile.png';
-import Laptop from "../../assets/images/laptop.png"
+import Laptop from "../../assets/images/laptop.png";
 
-const Raffle = () => {
+const Raffle = ({ navigation }) => {
+  const [user, setUser] = useState(null);
+  const [raffles, setRaffles] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const raffleData = await loadRaffle();
+      const userData = await loadUser();
+      setRaffles(raffleData);
+      setUser(userData);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+      setError('Failed to fetch data. Please try again later.');
+    }
+  };
+
   return (
-    <ScrollView>
-      <View className="w-full">
-        <Image source={Gamepad} style={styles.gamepadImage} className="rounded w-full" />
-      </View>
-      <View style={styles.listrafle} className="gap-2 justify-center item">
-        <View>
-          <Image source={Gamepad} style={styles.gImage} className="rounded" />
-        </View>
-        <View>
-          <Image source={Gamepad} style={styles.gImage} className="rounded" />
-        </View>
-        <View>
-          <Image source={Gamepad} style={styles.gImage} className="rounded" />
-        </View>
-      </View>
-      <View className="p-4">
-        <Text className="text-txtcolor font-bold text-2xl">
-          Skyline Jamaican restaurant
-        </Text>
-        <View className="mt-2">
-          <Text className="text-lg font-bold">Description</Text>
-          <Text className="text-base">Fundraising to help sports club, in old Folly district, St. Anns Jamaica</Text>
-        </View>
-        <View className="mt-4">
-          <Text className="text-lg font-bold">Time left</Text>
-          <View className="bg-primary p-2 rounded mt-2 space-x-4" style={styles.timeleft}>
-            <View>
-              <Text className="font-bold text-secondary text-center">30</Text>
-              <Text className="font-bold text-secondary text-center">DAYS</Text>
-            </View>
-            <View>
-              <Text className="font-bold text-secondary text-center">30</Text>
-              <Text className="font-bold text-secondary text-center">HOURS</Text>
-            </View>
-            <View>
-              <Text className="font-bold text-secondary text-center">30</Text>
-              <Text className="font-bold text-secondary text-center">MINUTES</Text>
-            </View>
-            <View>
-              <Text className="font-bold text-secondary text-center">30</Text>
-              <Text className="font-bold text-secondary text-center">SECONDS</Text>
-            </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.contentContainer}>
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
           </View>
-          <View style={styles.enddate} className="mt-2">
-            <Text className="text-sm font-bold text-txtcolor">Raffle ends</Text>
-            <Text className="text-sm font-bold text-primary">December 15, 2023, 5:47 pm</Text>
-          </View>
-          <View style={styles.support} className="mt-4 gap-2 w-full">
-            <View style={styles.supportItem}>
-              <Text className="font-bold text-bgcolor text-xl">Do Good. Support Our Cause Today!</Text>
+        ) : (
+          <>
+            <FlatList
+              data={raffles}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.raffleItem}>
+                  <Image source={Gamepad} style={styles.gamepadImage} />
+                  <View style={styles.listRaffleContainer}>
+                    {[1, 2, 3].map((index) => (
+                      <View key={index} style={styles.listRaffleItem}>
+                        <Image source={Gamepad} style={styles.gImage} />
+                      </View>
+                    ))}
+                  </View>
+                  <Text style={styles.raffleTitle}>{item.title}</Text>
+                  <Text>Description: {item.host_name}</Text>
+                  <Text>Description: {item.description}</Text>
+                  {/* Render other details */}
+                </View>
+              )}
+            />
+            <Image source={Gamepad} style={styles.gamepadImage} />
+            <View style={styles.listRaffleContainer}>
+              {[1, 2, 3].map((index) => (
+                <View key={index} style={styles.listRaffleItem}>
+                  <Image source={Gamepad} style={styles.gImage} />
+                </View>
+              ))}
             </View>
-            <View style={styles.supportBtn}>
+            <View style={styles.supportContainer}>
+              <Text style={styles.supportTitle}>Do Good. Support Our Cause Today!</Text>
               <CustomButton
                 title="Support"
                 handlePress={() => { }}
-                containerStyles="mt-3 justify-center items-center" />
+                containerStyles={styles.supportButton}
+              />
             </View>
-          </View>
-          <View className="mt-2">
-            <View style={styles.pricing}>
-              <View className="bg-primary rounded p-2" style={styles.priceItem}>
-                <Text className="font-bold text-secondary text-lg">3</Text>
-                <Text className="text-base font-bold text-secondary">Tickets</Text>
-                <Text className="font-bold text-secondary">$ 100</Text>
+            <View style={styles.pricingContainer}>
+              <Text style={styles.pricingTitle}>Pricing</Text>
+              <View style={styles.priceItemsContainer}>
+                {[3, 10, 30, 50, 90, 150].map((tickets) => (
+                  <View key={tickets} style={styles.priceItem}>
+                    <Text style={styles.priceText}>{tickets}</Text>
+                    <Text style={styles.priceText}>Tickets</Text>
+                    <Text style={styles.priceText}>$ 100</Text>
+                  </View>
+                ))}
               </View>
-              <View className="bg-primary rounded p-2" style={styles.priceItem}>
-                <Text className="font-bold text-secondary text-lg">10</Text>
-                <Text className="text-base font-bold text-secondary">Tickets</Text>
-                <Text className="font-bold text-secondary">$ 100</Text>
-              </View>
-              <View className="bg-primary rounded p-2" style={styles.priceItem}>
-                <Text className="font-bold text-secondary text-lg">30</Text>
-                <Text className="text-base font-bold text-secondary">Tickets</Text>
-                <Text className="font-bold text-secondary">$ 100</Text>
-              </View>
-              <View className="bg-primary rounded p-2" style={styles.priceItem}>
-                <Text className="font-bold text-secondary text-lg">50</Text>
-                <Text className="text-base font-bold text-secondary">Tickets</Text>
-                <Text className="font-bold text-secondary">$ 100</Text>
-              </View>
-              <View className="bg-primary rounded p-2" style={styles.priceItem}>
-                <Text className="font-bold text-secondary text-lg">90</Text>
-                <Text className="text-base font-bold text-secondary">Tickets</Text>
-                <Text className="font-bold text-secondary">$ 100</Text>
-              </View>
-              <View className="bg-primary rounded p-2" style={styles.priceItem}>
-                <Text className="font-bold text-secondary text-lg">150</Text>
-                <Text className="text-base font-bold text-secondary">Tickets</Text>
-                <Text className="font-bold text-secondary">$ 100</Text>
-              </View>
+              <CustomButton
+                title="Get a Ticket"
+                handlePress={() => { }}
+                containerStyles={styles.supportButton}
+              />
             </View>
-            <CustomButton
-              title="Get a ticket"
-              handlePress={() => { }}
-              containerStyles="mt-3 justify-center items-center" />
-          </View>
-          <View className="mt-4">
-            <View style={styles.rafflestatus} className="gap-2">
-              <View className="bg-bgcolor rounded">
-                <Text className="text-secondary p-2 font-bold">Description</Text>
-              </View>
-              <View className="border border-bgcolor rounded">
-                <Text className="text-primary p-2 font-bold">Raffle history</Text>
-              </View>
-              <View className="border border-bgcolor rounded">
-                <Text className="text-primary p-2 font-bold">Live support</Text>
-              </View>
-            </View>
-          </View>
-          <View className="mt-4" style={styles.card}>
-            <View className="" style={styles.about}>
-              <Image source={ProfileImg}
-                style={{
-                  height: 60,
-                  width: 60,
-                  resizeMode: 'contain'
-                }}
-                className="rounded-full" />
-              <View className="ml-4">
-                <Text className="font-bold text-txtcolor">Skyline Jamaican Restaurant</Text>
-                <Text className="font-bold text-gray-500">Restaurant</Text>
-              </View>
-            </View>
-            <View className="p-2">
-              <Text className="text-base font-bold">About us</Text>
-              <Text className="mt-1 text-txtcolor font-medium">
-                Fundraising to help Sports Club, In OLD FOLLY DISTRICT, ST ANNS Jamaica
-              </Text>
-              <Text className="mt-1 text-txtcolor font-medium">Lorem ipsum dolor sit amet consectetur adipiscing elit imperdiet ultrices tempor,
-                habitasse ante mi habitant libero elementum</Text>
-            </View>
-          </View>
-        </View>
-        <View className="mt-4">
-          <Text className="font-bold text-base ">Recommended raffles</Text>
-          <View style={styles.raffles}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="Start raffling"
-                    handlePress={() => router.push('/liveraffle')}
-                    containerStyles="mt-3 justify-center items-center" />
+            <View style={styles.statusContainer}>
+              <Text style={styles.statusTitle}>Raffle Status</Text>
+              <View style={styles.statusItemsContainer}>
+                <View style={styles.statusItem}>
+                  <Text style={styles.statusText}>Description</Text>
+                </View>
+                <View style={styles.statusItem}>
+                  <Text style={styles.statusText}>Raffle History</Text>
+                </View>
+                <View style={styles.statusItem}>
+                  <Text style={styles.statusText}>Live Support</Text>
                 </View>
               </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="Start raffling"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
+            </View>
+            <View style={styles.aboutContainer}>
+              <View style={styles.aboutHeader}>
+                <Image source={ProfileImg} style={styles.profileImage} />
+                <View style={styles.aboutHeaderText}>
+                  <Text style={styles.aboutTitle}>{user?.hostname}</Text>
+                  <Text style={styles.aboutSubtitle}>Restaurant</Text>
                 </View>
               </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="Start raffling"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
+              <View style={styles.aboutContent}>
+                <Text style={styles.aboutText}>
+                  Fundraising to help Sports Club, In OLD FOLLY DISTRICT, ST ANNS Jamaica
+                </Text>
+                <Text style={styles.aboutText}>
+                  Lorem ipsum dolor sit amet consectetur adipiscing elit imperdiet ultrices tempor,
+                  habitasse ante mi habitant libero elementum
+                </Text>
               </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="Start raffling"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-        </View>
+            </View>
+            <View style={styles.recommendedContainer}>
+              <Text style={styles.recommendedTitle}>Recommended Raffles</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {[1, 2, 3, 4].map((item) => (
+                  <View key={item} style={styles.recommendedItem}>
+                    <Image source={Laptop} style={styles.recommendedImage} />
+                    <View style={styles.recommendedContent}>
+                      <Text style={styles.recommendedItemTitle}>Victor the greatest designer</Text>
+                      <Text style={styles.recommendedItemSubtitle}>UI/UX</Text>
+                      <Text style={styles.recommendedItemText}>Victorakinola.com</Text>
+                      <CustomButton
+                        title="Start Raffling"
+                        handlePress={() => { }}
+                        containerStyles={styles.supportButton}
+                      />
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </>
+        )}
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  gamepadImage: {
-    height: 300,
-    resizeMode: 'contain',
-    width: '100%',
-    borderRadius: 15,
+  container: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
-  gImage: {
-    height: 100,
-    width: 100,
-    margin: 4
+  contentContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
   },
-  listrafle: {
-    flexDirection: 'row',
-    // padding: 2
-  },
-  timeleft: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  enddate: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  support: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    padding: 4
-  },
-  supportItem: {
-    width: '65%'
-  },
-  supportBtn: {
-    width: 'auto'
-  },
-  pricing: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  errorContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 4
   },
-  priceItem: {
-    width: '30%',
-    margin: 3,
-    alignItems: 'center'
-  },
-  rafflestatus: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 3
-  },
-  raffles: {
-    flexDirection: 'row',
+  errorText: {
+    fontSize: 16,
+    color: 'red',
   },
   raffleItem: {
-    width: 300,
-    marginRight: 8,
-  },
-  card: {
-    backgroundColor: 'white',
+    marginBottom: 10,
     padding: 10,
+    backgroundColor: '#f0f0f0',
     borderRadius: 5,
+  },
+  raffleTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  gamepadImage: {
+    height: 200,
+    width: '100%',
+    resizeMode: 'contain',
+    borderRadius: 15,
+    marginTop: 20,
+  },
+  listRaffleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+  },
+  listRaffleItem: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gImage: {
+    height: 80,
+    width: 80,
+    resizeMode: 'contain',
+  },
+  supportContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  supportTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  supportButton: {
+    marginTop: 10,
+  },
+  pricingContainer: {
+    marginTop: 20,
+  },
+  pricingTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  priceItemsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginTop: 10,
+  },
+  priceItem: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginVertical: 8,
+    width: '30%',
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 2,
+  },
+  statusContainer: {
+    marginTop: 20,
+  },
+  statusTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  statusItemsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statusItem: {
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    borderRadius: 10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
+  statusText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  aboutContainer: {
+    marginTop: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    alignItems: 'flex-start',
   },
-  about: {
+  aboutHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
+  },
+  profileImage: {
+    height: 60,
+    width: 60,
+    resizeMode: 'contain',
+    borderRadius: 30,
+  },
+  aboutHeaderText: {
+    marginLeft: 16,
+  },
+  aboutTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  aboutSubtitle: {
+    color: 'gray',
+  },
+  aboutContent: {
+    marginTop: 10,
+  },
+  aboutText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  recommendedContainer: {
+    marginTop: 20,
+  },
+  recommendedTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  recommendedItem: {
+    marginRight: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    width: 300,
+    alignItems: 'center',
+  },
+  recommendedImage: {
+    height: 150,
+    width: '100%',
+    resizeMode: 'contain',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  recommendedContent: {
+    padding: 10,
+  },
+  recommendedItemTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  recommendedItemSubtitle: {
+    color: 'gray',
+    marginBottom: 5,
   },
 });
 

@@ -6,15 +6,15 @@ import AuthContext from '../../contexts/AuthContext';
 import { loadUser } from '../../services/AuthService';
 
 // Import your screens here
-import Reason from './reason';
-import SignIn from './signin';
-import Register from './register';
-import MobileNumber from './number';
-import WelcomeLogin from './loginWelcome';
-import AccountCreated from './account';
-import Details from './details';
-import Album from './album';
-import TabsLayout from '../(tabs)/_layout';
+import AccountDetails from './accdetails';
+import Raffle from './raffle';
+import AddRaffle from './addraffle';
+import Address from './address';
+import CategoriesDropdown from './categories';
+import CreateRaffle from './createraffle';
+import Fundraising from './fundraising';
+import CreateOrganisation from './organisation';
+import NotificationSettings from './notificationset';
 
 // Create a Stack Navigator
 const Stack = createStackNavigator();
@@ -54,16 +54,15 @@ const AuthLayout = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
           <>
-            <Stack.Screen name="TabsLayout" component={TabsLayout} options={{ title: 'TabsLayout' }} />
             <Stack.Screen name="WelcomeLogin" component={WelcomeLogin} options={{ title: 'Welcome' }} />
             <Stack.Screen name="Reason" component={Reason} options={{ title: 'Reason' }} />
             <Stack.Screen name="MobileNumber" component={MobileNumber} options={{ title: 'Number' }} />
             <Stack.Screen name="AccountCreated" component={AccountCreated} options={{ title: 'Account' }} />
             <Stack.Screen name="Details" component={Details} options={{ title: 'Details' }} />
             <Stack.Screen name="Album" component={Album} options={{ title: 'Album' }} />
+            <Stack.Screen name="Raffle" component={Raffle} options={{ title: 'Raffle' }} />
           </>
-         ) : (
-
+        ) : (
           <>
             <Stack.Screen name="SignIn" component={SignIn} options={{ title: 'Sign In' }} />
             <Stack.Screen name="Register" component={Register} options={{ title: 'Register' }} />

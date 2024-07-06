@@ -74,17 +74,6 @@ const CreateOrganisation = () => {
   const handleOrganisation = async () => {
     setErrors({});
 
-    // Validate required fields
-    // let validationErrors = {};
-    // if (!selectedCategory) validationErrors.category = 'The category field is required.';
-    // const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-    // if (!urlPattern.test(website)) validationErrors.website = 'The website field must be a valid URL.';
-
-    // if (Object.keys(validationErrors).length > 0) {
-    //   setErrors(validationErrors);
-    //   return;
-    // }
-
     try {
       const orgData = {
         cover_image: coverImage,

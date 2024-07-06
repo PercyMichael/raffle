@@ -1,15 +1,35 @@
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import profImg from "../../assets/images/profile.png";
-import { useState } from 'react';
 import { router } from 'expo-router';
 import CustomButton from '../../components/CustomButton';
-
-import Laptop from "../../assets/images/laptop.png"
-
+import Laptop from "../../assets/images/laptop.png";
+import { useNavigation } from '@react-navigation/native';
 
 const Discover = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [raffles, setRaffles] = useState([]);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    fetchRaffles();
+  }, []);
+
+  const fetchRaffles = async () => {
+    try {
+      // Replace with your actual fetch logic
+      const response = await fetch('http://192.168.0.136:8000/api/raffles');
+      const data = await response.json();
+      setRaffles(data);
+    } catch (error) {
+      console.error('Failed to fetch raffles:', error);
+    }
+  };
+
+  const navigateToLiveRaffle = (raffle) => {
+    navigation.navigate('Raffle', { raffle });
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -25,8 +45,6 @@ const Discover = () => {
               size={24}
             />
           </TouchableOpacity>
-
-
           <Image
             source={profImg}
             style={styles.profileImage}
@@ -42,187 +60,91 @@ const Discover = () => {
           placeholder="Search..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          className="bg-slate-300 rounded p-2"
         />
       </View>
-      <View className="p-4">
-        <View>
-        </View>
-        <View style={styles.status} className="gap-2">
-          <View className="p-2 bg-bgcolor rounded">
-            <Text className="text-secondary font-bold">Popular</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={styles.status}>
+          <View style={styles.statusButton}>
+            <Text style={styles.statusText}>Popular</Text>
           </View>
-          <View className="border rounded border-gray-400 p-2">
-            <Text className="text-gray-500 font-bold">Newest</Text>
+          <View style={styles.statusButton}>
+            <Text style={styles.statusText}>Newest</Text>
           </View>
-          <View className="border rounded border-gray-400 p-2">
-            <Text className="text-gray-500 font-bold">Recommended</Text>
+          <View style={styles.statusButton}>
+            <Text style={styles.statusText}>Recommended</Text>
           </View>
-          <View className="border rounded border-gray-400 p-2">
-            <Text className="text-gray-500 font-bold">Trending</Text>
+          <View style={styles.statusButton}>
+            <Text style={styles.statusText}>Trending</Text>
           </View>
         </View>
-        <View className="mt-4">
-          <Text className="font-bold text-xl">Trending raffles</Text>
-          <View style={styles.raffles}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => router.push('/liveraffle')}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
+      </ScrollView>
+
+      <View style={styles.rafflesContainer}>
+        <Text style={styles.sectionTitle}>Trending Raffles</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {raffles.map((raffle, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.raffleItem}
+              onPress={() => navigateToLiveRaffle(raffle)} // Pass raffle object
+            >
+              <Image
+                source={Laptop}
+                style={styles.raffleImage}
+                resizeMode="cover"
+              />
+              <View style={styles.raffleContent}>
+                <Text style={styles.raffleTitle}>{raffle.host_name}</Text>
+                <Text style={styles.raffleSubtitle}>{raffle.organisation_id}</Text>
+                <Text style={styles.raffleSubtitle}>{raffle.description}</Text>
+                <Text style={styles.raffleTime}>{raffle.ending_date}</Text>
+                <CustomButton
+                  title="View Raffle"
+                  handlePress={() => navigateToLiveRaffle(raffle)} // Pass raffle object
+                  containerStyles={styles.buttonContainer}
+                />
               </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200,
-                    resizeMode: "contain"
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-        <View className="mt-4">
-          <Text className="font-bold text-xl">Recommended raffles</Text>
-          <View style={styles.raffles}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-              <View className="w-3/4 mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-                <Image source={Laptop}
-                  style={{
-                    width: '100%',
-                    height: 200
-                  }} className="rounded" />
-                <View className="p-2">
-                  <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-                  <Text className="text-gray-500 font-bold">UI/UX</Text>
-                  <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-                  <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-                  <CustomButton
-                    title="View raffle"
-                    handlePress={() => { }}
-                    containerStyles="mt-3 justify-center items-center" />
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-        </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
-    </ScrollView>
+      <View style={styles.rafflesContainer}>
+        <Text style={styles.sectionTitle}>Recommended Raffles</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {raffles.map((raffle, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.raffleItem}
+              onPress={() => navigateToLiveRaffle(raffle)} // Pass raffle object
+            >
+              <Image
+                source={Laptop}
+                style={styles.raffleImage}
+                resizeMode="cover"
+              />
+              <View style={styles.raffleContent}>
+                <Text style={styles.raffleTitle}>{raffle.title}</Text>
+                <Text style={styles.raffleSubtitle}>{raffle.category}</Text>
+                <Text style={styles.raffleSubtitle}>{raffle.website}</Text>
+                <Text style={styles.raffleTime}>{raffle.time_left}</Text>
+                <CustomButton
+                  title="View Raffle"
+                  handlePress={() => navigateToLiveRaffle(raffle)} // Pass raffle object
+                  containerStyles={styles.buttonContainer}
+                />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    </ScrollView >
   );
 };
-
-export default Discover;
 
 const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
+    padding: '4'
   },
   container: {
     padding: 16,
@@ -231,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-    // Ensures this view takes up necessary space
+    flex: 1,
   },
   headerText: {
     fontWeight: 'bold',
@@ -245,47 +167,87 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     borderRadius: 15,
-    marginLeft: 10, // Adds spacing between the icon and the image
+    marginLeft: 10,
   },
   search: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
-    borderRadius: 8,
     paddingHorizontal: 10,
-    paddingVertical: 5,
-    margin: 16,
+    borderRadius: 8,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    margin: 15
   },
   icon: {
-    marginRight: 8,
+    marginRight: 4,
   },
   input: {
     flex: 1,
+    height: 40,
     fontSize: 16,
-  },
-  imageBackground: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust opacity as needed
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  overlayText: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    paddingLeft: 5,
   },
   status: {
     flexDirection: 'row',
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
-  raffles: {
-    flexDirection: 'row',
+  statusButton: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginRight: 8,
+  },
+  statusText: {
+    fontWeight: 'bold',
+    color: 'gray',
+  },
+  rafflesContainer: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 16,
+    marginBottom: 8,
   },
   raffleItem: {
     width: 300,
-    marginRight: 8,
+    marginRight: 16,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  raffleImage: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+  },
+  raffleContent: {
+    padding: 12,
+  },
+  raffleTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  raffleSubtitle: {
+    color: 'gray',
+    marginBottom: 4,
+  },
+  raffleTime: {
+    fontSize: 12,
+    color: 'gray',
+    marginBottom: 8,
+  },
+  buttonContainer: {
+    marginTop: 8,
   },
 });
+
+export default Discover;

@@ -58,6 +58,9 @@ const CategoriesDropdown = ({ selectedCategory, setSelectedCategory }) => {
   );
 };
 
+export default CategoriesDropdown;
+
+
 const styles = StyleSheet.create({
   container: {
     marginVertical: 10,
@@ -91,4 +94,3 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-export default CategoriesDropdown;

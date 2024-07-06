@@ -6,28 +6,10 @@ import * as ImagePicker from 'expo-image-picker';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { useRouter } from 'expo-router';
-import { loadUser, create_fundraising } from '../../services/AuthService';
+import { loadUser, createraffle } from '../../services/AuthService';
 import DateTimePickerComponent from '../../components/datepicker';
 
 const PageHeader = ({ title }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const userData = await loadUser();
-        setUser(userData);
-      } catch (error) {
-        console.error('Failed to load user:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUser();
-  }, []);
-
   return (
     <View style={styles.header}>
       <Ionicons name="chevron-back" size={24} color="black" style={styles.icon} />
@@ -37,34 +19,78 @@ const PageHeader = ({ title }) => {
 };
 
 const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
-  const [text, setText] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const onChangeText = (inputText) => {
-    setText(inputText);
-  };
+  const [text1, setText1] = useState('');
+  const [text5, setText5] = useState('');
+  const [text20, setText20] = useState('');
+  const [text50, setText50] = useState('');
+  const [text100, setText100] = useState('');
+  const [text150, setText150] = useState('');
 
+  const [target, setTarget] = useState('');
   const [checked, setChecked] = useState(false);
-  const [formData, setFormData] = useState({
-    user_id: user.id,
-    organisation_id: '',
-    fundraising_id: '',
-    hostname: '',
-    description: '',
-    startDate: new Date(),
-    endDate: new Date(),
-    startTime: new Date(),
-    endTime: new Date(),
-    images: [null, null, null, null],
-    state_raffle_hosted: null
-  });
+  const [hostname, setHostName] = useState('');
+  const [description, setDescription] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [images, setImages] = useState([null, null, null, null]);
+  const [state_raffle_hosted, setStateRaffleHosted] = useState(null);
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const userData = await loadUser();
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        // Handle error fetching data
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   const handleInputChange = (name, value) => {
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    switch (name) {
+      case 'hostname':
+        setHostName(value);
+        break;
+      case 'description':
+        setDescription(value);
+        break;
+      case 'target':
+        setTarget(value);
+        break;
+      case 'text1':
+        setText1(value);
+        break;
+      case 'text5':
+        setText5(value);
+        break;
+      case 'text20':
+        setText20(value);
+        break;
+      case 'text50':
+        setText50(value);
+        break;
+      case 'text100':
+        setText100(value);
+        break;
+      case 'text150':
+        setText150(value);
+        break;
+      default:
+        break;
+    }
   };
 
   const pickImage = async (index) => {
@@ -75,27 +101,25 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setFormData(prevState => {
-        const newImages = [...prevState.images];
-        newImages[index] = result.assets[0].uri;
-        return { ...prevState, images: newImages };
-      });
+    if (!result.cancelled) {
+      const newImages = [...images];
+      newImages[index] = result.assets[0].uri;
+      setImages(newImages);
     }
   };
 
   const handleRemoveImage = (index) => {
-    setFormData(prevState => {
-      const newImages = [...prevState.images];
-      newImages[index] = null;
-      return { ...prevState, images: newImages };
-    });
+    const newImages = [...images];
+    newImages[index] = null;
+    setImages(newImages);
   };
 
   const handleRaffle = async () => {
     setErrors({});
 
-    const { hostname, description, startDate, endDate, startTime, endTime, images } = formData;
+    const formatDateForMySQL = (date) => {
+      return date.toISOString().split('.')[0].replace('T', ' ');
+    };
 
     if (!hostname || !description) {
       Alert.alert('Error', 'All fields are required.');
@@ -109,28 +133,36 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
 
     try {
       const raffleData = {
-        user_id,
-        organisation_id,
-        fundraising_id,
+        user_id: user.id,
+        organisation_id: 1,
+        fundraising_id: 1,
         hostname,
+        target,
         description,
         images: images.filter(image => image !== null),
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        startTime: startTime.toISOString(),
-        endTime: endTime.toISOString(),
+        startDate: formatDateForMySQL(startDate),
+        endDate: formatDateForMySQL(endDate),
+        startTime: formatDateForMySQL(startTime),
+        endTime: formatDateForMySQL(endTime),
         state_raffle_hosted,
+        text1,
+        text5,
+        text20,
+        text50,
+        text100,
+        text150
       };
 
-      const response = await create_raffle(raffleData);
+      const response = await createraffle(raffleData);
 
       if (response.message && response.message.includes('successfully')) {
         router.replace('/raffle');
       } else {
-        Alert.alert('Error', `Failed to register raffle: ${response.message}`);
+        Alert.alert('Error', `Failed to register raffle1: ${response.message}`);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to register raffle. Please try again.');
+      console.error('Error registering raffle:', error);
+      Alert.alert('Error', 'Failed to register raffle2. Please try again.');
     }
   };
 
@@ -150,24 +182,24 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
           <FormField
             title="Host name"
             placeholder="Host name"
-            value={formData.name}
-            handleChangeText={value => handleInputChange('name', value)}
+            value={hostname}
+            handleChangeText={value => handleInputChange('hostname', value)}
             otherStyles={styles.formField}
-            errors={errors.name}
+            errors={errors.hostname}
           />
           <FormField
             title="Description"
             placeholder="Enter raffle description"
-            value={formData.co}
-            handleChangeText={value => handleInputChange('co', value)}
+            value={description}
+            handleChangeText={value => handleInputChange('description', value)}
             otherStyles={styles.formField}
-            errors={errors.co}
+            errors={errors.description}
           />
 
           <View style={styles.imageContainer}>
             <Text style={styles.imageTitle}>Raffle item image uploads</Text>
             <View style={styles.imageUpload}>
-              {formData.images.map((image, index) => (
+              {images.map((image, index) => (
                 <View key={index} style={styles.imageWrapper}>
                   {image ? (
                     <>
@@ -188,126 +220,95 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
 
           <View style={styles.dateTimeContainer}>
             <Text style={styles.label}>Start Date</Text>
-            <DateTimePickerComponent value={formData.startDate} onChange={value => handleInputChange('startDate', value)} mode="date" />
+            <DateTimePickerComponent value={startDate} onChange={value => setStartDate(value)} mode="date" />
           </View>
           <View style={styles.dateTimeContainer}>
             <Text style={styles.label}>End Date</Text>
-            <DateTimePickerComponent value={formData.endDate} onChange={value => handleInputChange('endDate', value)} mode="date" />
+            <DateTimePickerComponent value={endDate} onChange={value => setEndDate(value)} mode="date" />
           </View>
 
           <View style={styles.times}>
             <View style={styles.dateTimeContainer}>
               <Text style={styles.label}>Start Time</Text>
-              <DateTimePickerComponent value={formData.startTime} onChange={value => handleInputChange('startTime', value)} mode="time" />
+              <DateTimePickerComponent value={startTime} onChange={value => setStartTime(value)} mode="time" />
             </View>
             <View style={styles.dateTimeContainer}>
               <Text style={styles.label}>End Time</Text>
-              <DateTimePickerComponent value={formData.endTime} onChange={value => handleInputChange('endTime', value)} mode="time" />
+              <DateTimePickerComponent value={endTime} onChange={value => setEndTime(value)} mode="time" />
             </View>
           </View>
 
-          <Text className="mt-2 font-bold">Raffle ticket prices</Text>
+          <View>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>Raffle target ($)</Text>
+              <TextInput
+                style={styles.target}
+                placeholder="Target($)"
+                onChangeText={value => handleInputChange('target', value)}
+                value={target}
+              />
+            </View>
 
-          <View style={styles.tickets}>
-            <View style={styles.priceInput}>
-              <TextInput
-                style={styles.input}
-                placeholder="Input amount($)"
-                onChangeText={onChangeText}
-                value={text}
-              />
-            </View>
-            <View>
-              <Text className="font-bold text-base">For</Text>
-            </View>
-            <View>
-              <Text className="border p-2 rounded border-gray-400 font-bold text-base">1 tickets</Text>
-            </View>
+            <Text style={styles.ticketLabel} className="mt-4">Raffle ticket Price</Text>
           </View>
-          <View style={styles.tickets}>
-            <View style={styles.priceInput}>
+
+          <View style={styles.ticketContainer}>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>1 Ticket</Text>
               <TextInput
-                style={styles.input}
-                placeholder="Input amount($)"
-                onChangeText={onChangeText}
-                value={text}
+                style={styles.ticketInput}
+                placeholder="Amount($)"
+                onChangeText={value => handleInputChange('text1', value)}
+                value={text1}
               />
             </View>
-            <View>
-              <Text className="font-bold text-base">For</Text>
-            </View>
-            <View>
-              <Text className="border p-2 rounded border-gray-400 font-bold text-base">5 tickets</Text>
-            </View>
-          </View>
-          <View style={styles.tickets}>
-            <View style={styles.priceInput}>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>5 Tickets</Text>
               <TextInput
-                style={styles.input}
-                placeholder="Input amount($)"
-                onChangeText={onChangeText}
-                value={text}
+                style={styles.ticketInput}
+                placeholder="Amount($)"
+                onChangeText={value => handleInputChange('text5', value)}
+                value={text5}
               />
             </View>
-            <View>
-              <Text className="font-bold text-base">For</Text>
-            </View>
-            <View>
-              <Text className="border p-2 rounded border-gray-400 font-bold text-base">10 tickets</Text>
-            </View>
-          </View>
-          <View style={styles.tickets}>
-            <View style={styles.priceInput}>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>20 Tickets</Text>
               <TextInput
-                style={styles.input}
-                placeholder="Input amount($)"
-                onChangeText={onChangeText}
-                value={text}
+                style={styles.ticketInput}
+                placeholder="Amount($)"
+                onChangeText={value => handleInputChange('text20', value)}
+                value={text20}
               />
             </View>
-            <View>
-              <Text className="font-bold text-base">For</Text>
-            </View>
-            <View>
-              <Text className="border p-2 rounded border-gray-400 font-bold text-base">50 tickets</Text>
-            </View>
-          </View>
-          <View style={styles.tickets}>
-            <View style={styles.priceInput}>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>50 Tickets</Text>
               <TextInput
-                style={styles.input}
-                placeholder="Input amount($)"
-                onChangeText={onChangeText}
-                value={text}
+                style={styles.ticketInput}
+                placeholder="Amount($)"
+                onChangeText={value => handleInputChange('text50', value)}
+                value={text50}
               />
             </View>
-            <View>
-              <Text className="font-bold text-base">For</Text>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>100 Tickets</Text>
+              <TextInput
+                style={styles.ticketInput}
+                placeholder="Amount($)"
+                onChangeText={value => handleInputChange('text100', value)}
+                value={text100}
+              />
             </View>
-            <View>
-              <Text className="border p-2 rounded border-gray-400 font-bold text-base">100 tickets</Text>
+            <View style={styles.ticketColumn}>
+              <Text style={styles.ticketLabel}>150 Tickets</Text>
+              <TextInput
+                style={styles.ticketInput}
+                placeholder="Amount($)"
+                onChangeText={value => handleInputChange('text150', value)}
+                value={text150}
+              />
             </View>
           </View>
           
-          <View style={styles.tickets}>
-            <View style={styles.priceInput}>
-              <TextInput
-                style={styles.input}
-                placeholder="Input amount($)"
-                onChangeText={onChangeText}
-                value={text}
-              />
-            </View>
-            <View>
-              <Text className="font-bold text-base">For</Text>
-            </View>
-            <View>
-              <Text className="border p-2 rounded border-gray-400 font-bold text-base">150 tickets</Text>
-            </View>
-          </View>
-
-          <Text className="mt-2 mb-4 text-base font-bold text-gray-500 w-3/4">The above preset value will be applied and can't be changed.</Text>
-
           <CheckBox
             title="By proceeding you have agreed to the terms and conditions"
             checked={checked}
@@ -315,6 +316,7 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
             containerStyle={styles.checkboxContainer}
             textStyle={styles.checkboxText}
           />
+
 
           <CustomButton
             title="Create a raffle"
@@ -326,6 +328,8 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
     </ScrollView>
   );
 };
+
+export default AddRaffle;
 
 const styles = StyleSheet.create({
   header: {
@@ -365,6 +369,7 @@ const styles = StyleSheet.create({
   },
   formField: {
     marginVertical: 8,
+    marginBottom: 10
   },
   dateTimeContainer: {
     marginVertical: 10,
@@ -442,28 +447,34 @@ const styles = StyleSheet.create({
   checkboxText: {
     fontSize: 14,
   },
-  tickets: {
+  ticketContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: 10,
-    width: '70%',
-
+    marginTop: 10,
   },
-  priceInput: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    width: '30%',
+  ticketColumn: {
+    width: '48%',
+    marginBottom: 10,
   },
-  input: {
+  ticketLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  ticketInput: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    padding: 10,
     borderRadius: 5,
+    paddingHorizontal: 10
   },
+  target: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10
+  }
 });
 
-export default AddRaffle;

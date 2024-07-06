@@ -18,14 +18,6 @@ const Album = () => {
         <Text className="font-medium text-gray-500 mt-2">Upload 2 photos to continue. Your first image will be your profile picture.
           Your second and third image will be used as your cover image. More changes
           can be mage in settings.</Text>
-        {/* <FormField
-          title="Full Name"
-          placeholder="Full name"
-          label={form.name}
-          handleChangeText={(e) => setForm({ ...form, name: e })}
-          otherStyles="mt-7"
-          keyboardType="email-address"
-        /> */}
         <View className="absolute bottom-10 w-full items-center">
           <CustomButton
             title="Continue"

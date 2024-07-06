@@ -22,6 +22,19 @@ export async function register(credentials) {
     throw error; // Ensure the caller can handle the error
   }
 }
+export async function paypal(payments) {
+  try {
+    const response = await axios.post("/paypal", payments);
+    const { data } = response;
+    await setToken(data.token);
+
+    // Return the user data
+    return data.paypal;
+  } catch (error) {
+    console.error('Error making payment:', error);
+    throw error;
+  }
+}
 
 export async function loadUser() {
   const token = await getToken();
@@ -62,6 +75,18 @@ export async function loadcategories() {
 
   return categories;
 };
+
+export async function loadRaffle() {
+  const token = await getToken();
+
+  const { data: raffles } = await axios.get("/raffles", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return raffles;
+}
 
 
 export async function create_organisation(orgData) {
@@ -116,7 +141,33 @@ export async function create_fundraising(fundData) {
   }
 }
 
-export async function create_raffle(raffleData) {
+export async function createraffle(raffleData) {
+  try {
+    const token = await getToken(); // Retrieve authentication token
+
+    const response = await axios.post('/createraffle', raffleData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Raffle created successfully:', response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error('Error creating Raffle:', error);
+    if (error.response) {
+      console.error('API Response:', error.response.data);
+      Alert.alert('Error', `Failed to create Raffle: ${error.response.data.message}`);
+    } else {
+      Alert.alert('Error', 'Failed to create raffle. Please try again later.');
+    }
+    throw error;
+  }
+}
+
+export async function create_ticket(raffleData) {
   try {
     const token = await getToken(); // Retrieve authentication token
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import Logo from "../assets/images/logo.png";
+import Logo from "../../assets/images/logo.png";
 
 const OnboardingScreen = () => {
   return (
@@ -23,7 +23,8 @@ const OnboardingScreen = () => {
             <Text className="text-primary font-bold">Continue</Text>
 
           </Pressable> */}
-          <Pressable
+        
+            <Pressable
             style={({ pressed }) => ({
               // backgroundColor: pressed ? 'darkgray' : 'secondary',
               paddingVertical: 12,

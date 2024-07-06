@@ -1,120 +1,157 @@
-import { Text, View, Image, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native'
-import { Tabs, Redirect } from 'expo-router'
-import { Feather, Ionicons } from '@expo/vector-icons'
+import React, { useState, useEffect, useCallback } from 'react';
+import { Text, View, Image, Platform, KeyboardAvoidingView, Keyboard, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
-import ProfileImg from "../../assets/images/profile.png"
+import profileImg from "../../assets/images/profile.png";
 
-const TabsLayout = () => {
+// Import your screens
+import Discover from '../(tabs)/discover';
+import LiveRaffle from '../(tabs)/liveraffle';
+import Add from '../(tabs)/add';
+import Notifications from '../(tabs)/notifications';
+import Profile from '../(tabs)/profile';
+
+// Create a Tab Navigator
+const Tab = createBottomTabNavigator();
+
+const HomeTabs = () => {
+  const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
+
+  const handleKeyboardDidShow = useCallback(() => {
+    setKeyboardIsVisible(true);
+  }, []);
+
+  const handleKeyboardDidHide = useCallback(() => {
+    setKeyboardIsVisible(false);
+  }, []);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, [handleKeyboardDidShow, handleKeyboardDidHide]);
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100}
     >
-      <Tabs screenOptions={{ tabBarShowLabel: false, tabBarStyle: { height: 70 } }}>
-        <Tabs.Screen
-          name='discover'
+      <Tab.Navigator
+        screenOptions={{
+          tabBarShowLabel: false,
+          tabBarStyle: { height: 70, display: keyboardIsVisible ? 'none' : 'flex' }
+        }}
+      >
+        <Tab.Screen
+          name='Discover'
+          component={Discover}
           options={{
             title: "Discover",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <View className="items-center">
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.iconContainer}>
                 <Ionicons
                   name={focused ? "search" : "search-outline"}
                   color={focused ? "green" : "#5E5C5C"}
-                  size={24} />
+                  size={24}
+                />
                 <Text style={styles.tabText(focused)}>Discover</Text>
-
               </View>
             )
           }}
         />
-        <Tabs.Screen
-          name='liveraffle'
+        <Tab.Screen
+          name='LiveRaffle'
+          component={LiveRaffle}
           options={{
             title: "Live Raffle",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <View className="items-center">
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.iconContainer}>
                 <Ionicons
                   name={focused ? "ticket" : "ticket-outline"}
                   color={focused ? "green" : "#5E5C5C"}
-                  size={24} />
+                  size={24}
+                />
                 <Text style={styles.tabText(focused)}>Live raffle</Text>
               </View>
             )
           }}
         />
-        <Tabs.Screen
-          name='add'
+        <Tab.Screen
+          name='Add'
+          component={Add}
           options={{
             title: "Add",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <View className="items-center"
-                color='white'
-                backgroundColor={focused ? "green" : "#5E5C5C"}
-                padding={6}
-                borderRadius={30}
-                style={{
-                  ...Platform.select({
-                    android: {
-                      elevation: 8,
-                    }
-                  },)
-                }}
-              >
+            tabBarIcon: ({ focused }) => (
+              <View style={[
+                styles.addIconContainer,
+                {
+                  backgroundColor: focused ? "green" : "#5E5C5C",
+                }
+              ]}>
                 <Feather
-                  name={focused ? "plus" : "plus"}
-                  color={focused ? "white" : "white"}
+                  name="plus"
+                  color="white"
                   size={24}
                 />
               </View>
             )
           }}
         />
-        <Tabs.Screen
-          name='notifications'
+        <Tab.Screen
+          name='Notifications'
+          component={Notifications}
           options={{
             title: "Notifications",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <View className="items-center">
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.iconContainer}>
                 <Ionicons
                   name={focused ? "notifications" : "notifications-outline"}
                   color={focused ? "green" : "#5E5C5C"}
-                  size={24} />
+                  size={24}
+                />
                 <Text style={styles.tabText(focused)}>Notifications</Text>
               </View>
             )
           }}
         />
-        <Tabs.Screen
-          name='profile'
+        <Tab.Screen
+          name='Profile'
+          component={Profile}
           options={{
             title: "Profile",
             headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <View className="items-center">
-                <Image source={ProfileImg}
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.iconContainer}>
+                <Image source={profileImg}
                   style={{
                     height: 30,
                     width: 30,
-                    resizeMode: 'contain'
+                    resizeMode: 'contain',
+                    borderRadius: 30,
                   }}
-                  color={focused ? "green" : "#5E5C5C"}
-                  className="rounded-full" />
+                />
                 <Text style={styles.tabText(focused)}>Profile</Text>
               </View>
             )
           }}
         />
-      </Tabs>
-    </KeyboardAvoidingView>)
-}
+      </Tab.Navigator>
+    </KeyboardAvoidingView>
+  );
+};
 
-
-export default TabsLayout;
+export default HomeTabs;
 
 const styles = StyleSheet.create({
   tabText: (focused) => ({
@@ -123,4 +160,18 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 1
   }),
+  iconContainer: {
+    alignItems: 'center',
+  },
+  addIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 6,
+    borderRadius: 30,
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      }
+    }),
+  },
 });
