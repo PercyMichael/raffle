@@ -1,49 +1,74 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import CustomButton from '../../components/CustomButton';
+import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import FormField from '../../components/FormField'; // Import your FormField component
 
-const BillingAddress = () => {
+const BillingAddress = ({ backgroundColor, textColor }) => {
+  const [form, setForm] = useState({
+    firstname: '',
+    lastname: '',
+    password: ''
+  });
+  const title = "Billing Address";
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText} className="bg-actionbtn p-2">Billing address</Text>
-        <View className="p-4">
-          <Text className="text-center font-bold">Setup your address to receive check</Text>
-        </View>
+    <ScrollView>
+      <View style={[styles.header, { backgroundColor }]}>
+        <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
+        <Text style={[styles.headerText, { color: textColor }]}>{title}</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          title="Save changes"
-          handlePress={() => { }}
-          containerStyles={styles.button}
+      <View style={styles.container}>
+        <FormField
+          title="First Name"
+          placeholder="First Name"
+          label={form.firstname}
+          handleChangeText={(e) => setForm({ ...form, firstname: e })}
+          otherStyles={{ marginTop: 7 }} // No need to set width to 100% in React Native
         />
+        <FormField
+          title="Last Name"
+          placeholder="Last Name"
+          label={form.lastname}
+          handleChangeText={(e) => setForm({ ...form, lastname: e })}
+          otherStyles={{ marginTop: 7 }}
+        />
+
+        <TouchableOpacity onPress={() => navigation.push('/shipping')} style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save changes</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default BillingAddress;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
   header: {
-    backgroundColor: '#actionbtn',
-  },
-  headerText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  button: {
-    marginTop: 12,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  container: {
+    padding: 10,
+  },
+  saveButton: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 8,
+    paddingVertical: 12,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#333',
   },
 });
+

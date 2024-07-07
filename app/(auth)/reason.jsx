@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
 
-export default function Reason() {
+const Reason = () => {
   return (
     <View>
       <Text>Reason</Text>
@@ -9,5 +8,6 @@ export default function Reason() {
   )
 }
 
+export default Reason;
 
 const styles = StyleSheet.create({})

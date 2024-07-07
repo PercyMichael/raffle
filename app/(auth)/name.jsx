@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 import FormField from '../../components/FormField'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link } from 'expo-router'
+import CustomButton from '../../components/CustomButton'
 
-export default function fullName() {
+const FullName = () => {
   const [form, setForm] = useState({
     name: '',
   })
@@ -30,3 +31,5 @@ export default function fullName() {
     </SafeAreaView>
   )
 }
+
+export default FullName

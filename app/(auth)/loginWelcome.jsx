@@ -1,39 +1,134 @@
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link } from 'expo-router'
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, Image, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
-import welcomeImg from "../../assets/images/welcome.png"
-import CustomButton from '../../components/CustomButton'
+import welcomeImg from "../../assets/images/welcome.png";
 
-export default function welcomeLogin () {
+const WelcomeLogin = () => {
+  const [errors, setErrors] = useState('');
+  const navigation = useNavigation();
+
+  const handleRegister = () => {
+    setErrors('');
+
+    try {
+      navigation.navigate('Register'); 
+    } catch (error) {
+      console.log('Error in handleRegister:', error);
+    }
+  };
+  const handleLogin = () => {
+    setErrors('');
+
+    try {
+      navigation.navigate('Signin');
+    } catch (error) {
+      console.log('Error in handleRegister:', error);
+    }
+  };
+
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={{ height: '100%' }}>
-        <View className="w-full h-full px-4 justify-center items-center">
-          <Image source={welcomeImg}
-            style={{
-              width: 350,
-              height: 400,
-              resizeMode: 'contain'
-            }} />
-          <View className="">
-            <Text className="font-extrabold text-2xl">Welcome to Raffleit</Text>
-            <Text className="text-lg">Welcome to the Raffleit mobile app. Where excitement and opportunity collide!</Text>
-
+    <SafeAreaView style={styles.safeArea} screenOptions={{ headerShown: false }}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <View style={styles.container}>
+          <Image source={welcomeImg} style={styles.image} />
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>Welcome to Raffleit</Text>
+            <Text style={styles.subtitle}>Welcome to the Raffleit mobile app. Where excitement and opportunity collide!</Text>
+            {/* 
             <CustomButton
               title="Register"
-              handlePress={() => { }}
-              containerStyles="mt-7 mb-5" />
-            <View className="flex-row justify-center items-center gap-4">
-              <Text className="font-bold text-lg">Already have an account ?</Text>
-              <Link href="/signin" className="text-bgcolor text-lg font-bold underline">Login</Link>
+              handlePress={handleRegister}
+              containerStyles={styles.button}
+            /> */}
+
+            <Pressable
+              style={({ pressed }) => ({
+                // backgroundColor: pressed ? 'darkgray' : 'secondary',
+                paddingVertical: 12,
+                paddingHorizontal: 24,
+              })}
+              onPress={handleRegister}
+              className="bg-secondary p-2 rounded"
+            >
+              <Text className="text-primary font-bold">Register</Text>
+            </Pressable>
+
+            <View style={styles.linkContainer}>
+              <Text style={styles.linkText}>Already have an account ?</Text>
+              <Pressable
+                style={({ pressed }) => ({
+                  // backgroundColor: pressed ? 'darkgray' : 'secondary',
+                  paddingVertical: 12,
+                  paddingHorizontal: 24,
+                })}
+                onPress={handleLogin}
+                className="bg-secondary p-2 rounded"
+              >
+                <Text className="text-primary font-bold">Login</Text>
+              </Pressable>
+
             </View>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-const styles = StyleSheet.create({})
+export default WelcomeLogin;
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollView: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  image: {
+    width: 350,
+    height: 400,
+    resizeMode: 'contain',
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  button: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  linkText: {
+    fontSize: 16,
+    marginRight: 5,
+  },
+  link: {
+    fontSize: 16,
+    color: '#007BFF',
+    textDecorationLine: 'underline',
+  },
+});

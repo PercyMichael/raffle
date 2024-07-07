@@ -1,24 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, Image } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Laptop from "../../assets/images/laptop.png";
 import CustomButton from '../../components/CustomButton';
-import { Redirect, router } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router'; // Adjust according to your navigation setup
+import { useRoute } from '@react-navigation/native';
 
 const data = [{ label: 'Example Item', value: '1' }];
 
-export default function LiveRaffle() {
-
-
-
+const LiveRaffle = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedValue, setSelectedValue] = useState(null);
+  const [raffles, setRaffles] = useState([]);
 
+  const router = useRouter();
+  const navigation = useNavigation();
+
+  const route = useRoute();
+  // const { id } = route.params;
+
+
+
+  useEffect(() => {
+    fetchRaffles();
+  }, []);
+
+  const fetchRaffles = async () => {
+    try {
+      // Replace with your actual fetch logic
+      const response = await fetch('http://192.168.0.136:8000/api/raffles');
+      const data = await response.json();
+      setRaffles(data);
+    } catch (error) {
+      console.error('Failed to fetch raffles:', error);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ padding: 20 }}>
-        <Text className="font-bold text-xl">Live raffle</Text>
+        <Text style={styles.headerText}>Live raffle</Text>
       </View>
       <View>
         <View style={styles.searching}>
@@ -29,7 +51,6 @@ export default function LiveRaffle() {
               placeholder="Search..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              className="bg-slate-300 rounded p-2"
             />
           </View>
           <View style={styles.dropdown}>
@@ -46,86 +67,39 @@ export default function LiveRaffle() {
             </View>
           </View>
         </View>
-        <View className="justify-center items-center p-4">
-          <View className="w-full bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-            <Image source={Laptop}
-              style={{
-                width: '100%',
-                height: 200
-              }} className="rounded" />
-            <View className="p-2">
-              <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-              <Text className="text-gray-500 font-bold">UI/UX</Text>
-              <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-              <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-              <CustomButton
-                title="View raffle"
-                handlePress={() => router.push('/raffle')}
-                containerStyles="mt-3 justify-center items-center" />
+        <View style={styles.raffleContainer}>
+          {[...Array(4)].map((_, index) => (
+            <View key={index} style={styles.raffleItem}>
+              <Image source={Laptop} style={styles.image} />
+              <View style={styles.raffleInfo}>
+                <Text style={styles.title}>Victor the greatest designer</Text>
+                <Text style={styles.subtitle}>UI/UX</Text>
+                <Text style={styles.website}>Victorakinola.com</Text>
+                <Text style={styles.time}>20h 33m</Text>
+                <CustomButton
+                  title="View raffle"
+                  handlePress={() => router.push('/raffle')}
+                  containerStyles={styles.buttonContainer}
+                />
+              </View>
             </View>
-          </View>
-          <View className="w-full mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-            <Image source={Laptop}
-              style={{
-                width: '100%',
-                height: 200
-              }} className="rounded" />
-            <View className="p-2">
-              <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-              <Text className="text-gray-500 font-bold">UI/UX</Text>
-              <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-              <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-              <CustomButton
-                title="View raffle"
-                handlePress={() => { }}
-                containerStyles="mt-3 justify-center items-center" />
-            </View>
-          </View>
-          <View className="w-full mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-            <Image source={Laptop}
-              style={{
-                width: '100%',
-                height: 200
-              }} className="rounded" />
-            <View className="p-2">
-              <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-              <Text className="text-gray-500 font-bold">UI/UX</Text>
-              <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-              <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-              <CustomButton
-                title="View raffle"
-                handlePress={() => { }}
-                containerStyles="mt-3 justify-center items-center" />
-            </View>
-          </View>
-          <View className="w-full mt-4 bg-actionbtn p-2 rounded" style={styles.raffleItem}>
-            <Image source={Laptop}
-              style={{
-                width: '100%',
-                height: 200
-              }} className="rounded" />
-            <View className="p-2">
-              <Text className="mt-2 font-bold text-base">Victor the greatest designer</Text>
-              <Text className="text-gray-500 font-bold">UI/UX</Text>
-              <Text className="text-xs font-bold text-gray-500">Victorakinola.com</Text>
-              <Text className="text-base font-bold text-gray-500">20h 33m</Text>
-              <CustomButton
-                title="View raffle"
-                handlePress={() => { }}
-                containerStyles="mt-3 justify-center items-center" />
-            </View>
-          </View>
+          ))}
         </View>
       </View>
-
-
     </ScrollView>
   );
 }
 
+export default LiveRaffle;
+
 const styles = StyleSheet.create({
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   searching: {
     flexDirection: 'row',
+    margin: 16,
   },
   search: {
     flexDirection: 'row',
@@ -134,14 +108,75 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    margin: 16,
-    width: '50%'
+    width: '60%',
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+
   },
   icon: {
-    marginRight: 8,
+    marginRight: 3,
   },
   input: {
     flex: 1,
     fontSize: 16,
   },
-})
+  dropdown: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textItem: {
+    fontSize: 16,
+  },
+  raffleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+  },
+  raffleItem: {
+    width: '100%',
+    backgroundColor: '#E0E0E0',
+    padding: 2,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+  },
+  raffleInfo: {
+    padding: 16,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    color: '#555',
+    fontWeight: 'bold',
+  },
+  website: {
+    fontSize: 12,
+    color: '#555',
+  },
+  time: {
+    fontSize: 16,
+    color: '#555',
+  },
+  buttonContainer: {
+    marginTop: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

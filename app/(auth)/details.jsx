@@ -9,6 +9,6 @@ const Details = () => {
   )
 }
 
-export default Details
+export default Details;
 
 const styles = StyleSheet.create({})
