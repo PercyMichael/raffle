@@ -8,15 +8,7 @@ import CustomButton from '../../components/CustomButton';
 import { useRouter } from 'expo-router';
 import { loadUser, createraffle } from '../../services/AuthService';
 import DateTimePickerComponent from '../../components/datepicker';
-
-const PageHeader = ({ title }) => {
-  return (
-    <View style={styles.header}>
-      <Ionicons name="chevron-back" size={24} color="black" style={styles.icon} />
-      <Text style={styles.headerTitle}>{title}</Text>
-    </View>
-  );
-};
+import Header from '../../components/header';
 
 const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
   const [user, setUser] = useState(null);
@@ -41,6 +33,7 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
   const [state_raffle_hosted, setStateRaffleHosted] = useState(null);
   const [errors, setErrors] = useState({});
   const router = useRouter();
+
 
   useEffect(() => {
     async function fetchData() {
@@ -168,12 +161,9 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <PageHeader title="Create a Raffle" />
-      </View>
-
+      <Header title="Create Raffle"/>
       <View style={styles.form}>
-        <View style={[styles.statusBar, { backgroundColor }]}>
+        <View style={[styles.statusBar, {}]}>
           <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
           <Text style={[styles.statusTitle, { color: textColor }]}>Create your first raffle</Text>
         </View>
@@ -308,7 +298,7 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
               />
             </View>
           </View>
-          
+
           <CheckBox
             title="By proceeding you have agreed to the terms and conditions"
             checked={checked}
@@ -332,24 +322,6 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
 export default AddRaffle;
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    backgroundColor: '#fff',
-  },
-  icon: {
-    marginRight: 10,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   statusBar: {
     paddingVertical: 10,
     flexDirection: 'row',

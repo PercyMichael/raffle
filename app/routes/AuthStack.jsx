@@ -1,17 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import SignIn from '../(auth)/signin';
+// routes/AuthStack.jsx
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useSelector } from 'react-redux';
+import LoginWelcome from '../(auth)/loginWelcome';
+import Signin from '../(auth)/signin';
 import Register from '../(auth)/register';
 
-const AuthStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="signin" component={SignIn} />
-      <Stack.Screen name="register" component={Register} />
-    </Stack.Navigator>
-  )
-}
+const Stack = createStackNavigator();
 
-export default AuthStack
+const AuthStack = () => (
+  <Stack.Navigator initialRouteName="LoginWelcome" screenOptions={{ headerShown: false }} >
+    <Stack.Screen name="LoginWelcome" component={LoginWelcome} />
+    <Stack.Screen name="Signin" component={Signin} />
+    <Stack.Screen name="Register" component={Register} />
+  </Stack.Navigator>
+);
 
-const styles = StyleSheet.create({})
+export default AuthStack;
+

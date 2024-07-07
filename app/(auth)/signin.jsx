@@ -1,77 +1,69 @@
-import { View, Text, ScrollView, Image, Platform } from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, useRouter } from 'expo-router';
-import FormField from "../../components/FormField";
-import CustomButton from "../../components/CustomButton";
-import Logo from "../../assets/images/raffleitapp.png";
-import { login, loadUser } from "../../services/AuthService";
-
-
+import { useDispatch } from 'react-redux';
+import { login } from '../store/actions';
+import Logo from '../../assets/images/raffleitapp.png';
+import { useNavigation } from '@react-navigation/native';
+import FormField from '../../components/FormField';
+import CustomButton from '../../components/CustomButton';
+import { loginAPI } from "../../services/AuthService";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [errors, setErrors] = useState({})
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-  const router = useRouter();
-
-  async function handleLogin() {
+  const handleLogin = async () => {
     setErrors({});
-    // setLoading(true);
 
     try {
-      await login({
+      const { token, userData } = await loginAPI({
         email,
         password,
         device_name: `${Platform.OS} ${Platform.Version}`
       });
-      
-      const user = await loadUser();
 
-      console.log(user);
+      console.log('User:', userData); // Log user data for debugging
 
-      // Handle the data and token here
-      // Store the token and navigate to another screen
-      router.replace('/discover');
-    }
-    catch (e) {
+      dispatch(login(token, userData));
+
+      // Navigate to the HomeTabs screen after successful login
+      navigation.navigate('HomeTabs');
+    } catch (e) {
       console.error('Error:', e);  // Log the error for debugging
 
-      // Check for common HTTP error status codes
+      // Handle specific HTTP error status codes
       if (e.response) {
         const status = e.response.status;
         if (status === 400) {
           console.error('Bad Request:', e.response.data);
-        }
-        else if (status === 401) {
+        } else if (status === 401) {
           console.error('Unauthorized:', e.response.data);
-        }
-        else if (status === 422) {
+        } else if (status === 422) {
           console.error('Validation Error:', e.response.data);
           setErrors(e.response.data.errors || {});
-        }
-        else {
+        } else {
           console.error(`Error ${status}:`, e.response.data);
         }
-      }
-      else if (e.request) {
+      } else if (e.request) {
         console.error('No response received:', e.request);
-      }
-      else {
+      } else {
         console.error('Error setting up request:', e.message);
       }
     }
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={{ height: '100%' }}>
-        <View className="w-full h-full px-5">
-          <View className="items-center justify-center">
-            <Image source={Logo} />
-            <Text className="font-black mt-4 text-xl">Login to Raffleit</Text>
-            <Text className="mt-2 text-lg font-gray">We are happy to see you again!</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Image source={Logo} style={styles.logo} />
+            <Text style={styles.title}>Login to Raffleit</Text>
+            <Text style={styles.subtitle}>We are happy to see you again!</Text>
           </View>
 
           <FormField
@@ -94,20 +86,73 @@ const SignIn = () => {
             errors={errors.password}
           />
 
+          {errors.general && (
+            <Text style={styles.errorText}>{errors.general}</Text>
+          )}
+
           <CustomButton
             title="Login"
             handlePress={handleLogin}
             containerStyles="mt-7"
           />
 
-          <View className="flex-row justify-center items-center gap-4 mt-2">
-            <Text className="font-bold text-lg">Don't have an account?</Text>
-            <Link href="/register" className="text-bgcolor font-bold text-lg underline ml-2">Sign up</Link>
+          <View style={styles.linkContainer}>
+            <Text style={styles.text}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.link}>Register</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain'
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    marginTop: 5,
+    color: '#888',
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  link: {
+    color: 'green',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
+  },
+});
 
 export default SignIn;

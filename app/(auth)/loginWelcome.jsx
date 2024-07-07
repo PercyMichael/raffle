@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { router } from 'expo-router';
 
 import welcomeImg from "../../assets/images/welcome.png";
-import CustomButton from '../../components/CustomButton';
 
 const WelcomeLogin = () => {
   const [errors, setErrors] = useState('');
@@ -15,16 +13,23 @@ const WelcomeLogin = () => {
     setErrors('');
 
     try {
-      // Navigate to the register screen
-      navigation.navigate('Reason'); // Ensure 'Register' matches the name of your register screen in the stack navigator
+      navigation.navigate('Register'); 
     } catch (error) {
       console.log('Error in handleRegister:', error);
-      // Handle errors appropriately
+    }
+  };
+  const handleLogin = () => {
+    setErrors('');
+
+    try {
+      navigation.navigate('Signin');
+    } catch (error) {
+      console.log('Error in handleRegister:', error);
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} screenOptions={{ headerShown: false }}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.container}>
           <Image source={welcomeImg} style={styles.image} />
@@ -44,7 +49,7 @@ const WelcomeLogin = () => {
                 paddingVertical: 12,
                 paddingHorizontal: 24,
               })}
-              onPress={() => router.push('/signin')}
+              onPress={handleRegister}
               className="bg-secondary p-2 rounded"
             >
               <Text className="text-primary font-bold">Register</Text>
@@ -58,7 +63,7 @@ const WelcomeLogin = () => {
                   paddingVertical: 12,
                   paddingHorizontal: 24,
                 })}
-                onPress={handleRegister}
+                onPress={handleLogin}
                 className="bg-secondary p-2 rounded"
               >
                 <Text className="text-primary font-bold">Login</Text>

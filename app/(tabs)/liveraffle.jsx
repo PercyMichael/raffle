@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, Image } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Laptop from "../../assets/images/laptop.png";
 import CustomButton from '../../components/CustomButton';
+import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router'; // Adjust according to your navigation setup
+import { useRoute } from '@react-navigation/native';
 
 const data = [{ label: 'Example Item', value: '1' }];
 
@@ -14,6 +16,9 @@ const LiveRaffle = () => {
 
   const router = useRouter();
   const navigation = useNavigation();
+
+  const route = useRoute();
+  // const { id } = route.params;
 
 
 

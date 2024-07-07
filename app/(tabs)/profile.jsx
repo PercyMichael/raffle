@@ -2,11 +2,19 @@ import { View, Text, ScrollView, Image, StyleSheet, Pressable, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/actions';
+
 import { loadUser } from "../../services/AuthService";
 import CustomButton from '../../components/CustomButton';
 import profileImg from "../../assets/images/profile.png";
 
 const Menu = () => {
+  const route = useRoute();
+  // const { id } = route.params;
+  const dispatch = useDispatch();
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +41,17 @@ const Menu = () => {
       // Code for already being a host
       console.log('User is already a host.');
     }
+  };
+
+  const handleLogout = () => {
+    // Dispatch the logout action
+    dispatch(logout());
+
+    // Perform any additional logout logic (e.g., clear local storage, navigate to login screen, etc.)
+    // Example:
+    // localStorage.removeItem('authToken');
+    console.log("data cleared", authToken);
+    // history.push('/login'); // Assuming 'history' is available for navigation
   };
 
 
@@ -117,7 +136,7 @@ const Menu = () => {
             />
           )}
 
-          <TouchableOpacity onPress={() => router.push('/')} style={styles.button}>
+          <TouchableOpacity onPress={handleLogout} style={styles.button}>
             <Text style={styles.logoutBtn}>Logout</Text>
           </TouchableOpacity>
 

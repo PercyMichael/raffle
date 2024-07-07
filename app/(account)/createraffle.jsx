@@ -2,28 +2,19 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-nati
 import { Ionicons } from '@expo/vector-icons'
 import CustomButton from '../../components/CustomButton';
 import { router } from 'expo-router';
+import Header from '../../components/header';
 
-const PageHeader = ({ title, onBackPress }) => (
-  <View style={styles.headerContainer}>
-    <TouchableOpacity onPress={onBackPress}>
-      <Ionicons name="chevron-back" size={24} color="black" style={styles.backIcon} />
-    </TouchableOpacity>
-    <Text style={styles.headerTitle}>{title}</Text>
-  </View>
-);
 
 function handleCreateRaffle() {
-  console.log('Navigating to the raffle creation page...');
-  router.push('/addraffle')
+  console.log('Proceed to create raffle, STEP 1...');
+  router.push('/organisation')
 }
 
 
 const CreateRaffle = () => {
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <PageHeader title="Create a Raffle" onBackPress={() => router.back()} />
-      </View>
+      <Header title="Create Raffle Procedure"/>
 
       <View className="mt-6">
         <View style={styles.raffles} className="p-6 w-3/4 mx-auto my-4 relative">
@@ -92,29 +83,9 @@ const CreateRaffle = () => {
   )
 }
 
-export default CreateRaffle
+export default CreateRaffle;
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    backgroundColor: 'white',
-    elevation: 4,
-    gap: 6,
-  },
-  backIcon: {
-    marginRight: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-  },
   raffles: {
     padding: 16,
     margin: 16,

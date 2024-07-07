@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { create_organisation, loadcategories, loadUser } from '../../services/AuthService'; // Assuming loadUser is imported
-import { Ionicons } from '@expo/vector-icons';
+import { create_organisation, loadcategories, loadUser } from '../../services/AuthService';
 import CategoriesDropdown from './categories';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { useRouter } from 'expo-router';
+import Header from '../../components/header';
 
-const PageHeader = ({ title, onBackPress }) => (
-  <View style={styles.headerContainer}>
-    <TouchableOpacity onPress={onBackPress}>
-      <Ionicons name="chevron-back" size={24} color="black" style={styles.backIcon} />
-    </TouchableOpacity>
-    <Text style={styles.headerTitle}>{title}</Text>
-  </View>
-);
 
 const CreateOrganisation = () => {
   const [user, setUser] = useState(null);
@@ -93,7 +85,8 @@ const CreateOrganisation = () => {
 
       if (response.code === 201) {
         console.log('Organisation registered successfully:', response.data);
-        // Navigate to fundraising page upon successful registration
+        console.log('Proceed to create raffle, STEP 2 ...');
+
         router.replace('/fundraising');
       } else {
         console.log('Organisation registration failed:', response.message);
@@ -115,9 +108,7 @@ const CreateOrganisation = () => {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <PageHeader title="Create a Raffle" onBackPress={() => console.log('Navigate back')} />
-      </View>
+      <Header title="Setup your Organisation"/>
 
       <View style={styles.formContainer}>
         <Text style={styles.sectionTitle}>Tell us about your organisation</Text>
@@ -185,7 +176,8 @@ const CreateOrganisation = () => {
           <CustomButton
             title="Proceed"
             handlePress={handleOrganisation}
-            containerStyle={styles.customButton}
+            // containerStyle={styles.customButton}
+            containerStyles="mt-4 px-2 py-1 w-2/4 mb-4"
           />
         </View>
       </View>
@@ -198,26 +190,6 @@ export default CreateOrganisation;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  headerContainer: {
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    backgroundColor: 'white',
-    elevation: 4,
-    gap: 6,
-  },
-  backIcon: {
-    marginRight: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
   },
   formContainer: {
     padding: 16,
@@ -258,8 +230,5 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     marginTop: 10,
-  },
-  customButton: {
-    marginTop: 20,
   },
 });

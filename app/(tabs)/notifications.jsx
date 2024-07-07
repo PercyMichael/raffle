@@ -2,9 +2,12 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
 
 const Notifications = () => {
   const router = useRouter();
+  const route = useRoute();
+  // const { id } = route.params;
 
   return (
     <ScrollView contentContainerStyle={{ height: '100%' }}>

@@ -4,15 +4,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import CustomButton from '../../components/CustomButton';
 import { loadUser } from '../../services/AuthService';
+import { useRoute } from '@react-navigation/native';
 
 const Add = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+
+  const route = useRoute();
+  // const { id } = route.params;
+
   useEffect(() => {
     async function fetchUser() {
       try {
-        const userData = await loadUser(); // Assume loadUser is defined elsewhere and fetches user data
+        const userData = await loadUser(); // Fetch user data
         setUser(userData);
       } catch (error) {
         console.error('Failed to load user:', error);
@@ -27,57 +32,41 @@ const Add = () => {
   function handleCreateRaffle() {
     if (user) {
       console.log('Navigating to the raffle creation page...');
-      router.push('/(account)/createraffle')
-      // Logic to navigate to the raffle creation page or perform other actions
+      router.push('/(account)/createraffle'); // Correct path
     } else {
       console.log('Redirecting to login page...');
-      // Logic to navigate to the login page or prompt login
+      router.push('/login'); // Assuming you have a login page
     }
   }
+
   function handleCancelRaffle() {
-    if (user) {
-      console.log('Canceled raffle...');
-      router.push('/discover')
-      // Logic to navigate to the raffle creation page or perform other actions
-    } else {
-      console.log('Redirecting to login page...');
-      router.push('(account)/createraffle')
-      // Logic to navigate to the login page or prompt login
-    }
+    console.log('Canceled raffle...');
+    router.push('/discover');
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.card} className="bg-white w-3/4 h-auto flex justify-center">
-        <Ionicons name="ticket" size={32} color="green" className="p-2 bg-bgcolor rounded-full" />
-
-        <Text style={styles.header} className="text-bgcolor">Host a Raffle?</Text>
-        <Text style={styles.subHeader} className="font-semibold text-gray-400">Ready to be the ultimate host of your own Raffle experience?</Text>
-        <Text className="font-semibold text-gray-400">Let's get started!</Text>
-
+      <View style={styles.card}>
+        <Ionicons name="ticket" size={32} color="green" style={styles.icon} />
+        <Text style={styles.header}>Host a Raffle?</Text>
+        <Text style={styles.subHeader}>Ready to be the ultimate host of your own Raffle experience? Let's get started!</Text>
         <View style={styles.textContainer}>
           {loading ? (
             <Text style={styles.loadingText}>Loading user information...</Text>
           ) : user ? (
-            <Text style={styles.actionText} className="font-bold mb-5 text-base">
+            <Text style={styles.actionText}>
               {user.user_type === 1 ? 'You are already a host, Proceed and host a raffle' : 'To host a Raffle you must be a host.'}
             </Text>
           ) : (
-            <Text style={styles.welcomeText} className="text-bold">Welcome! Please log in to access your raffling guide.</Text>
+            <Text style={styles.welcomeText}>Welcome! Please log in to access your raffling guide.</Text>
           )}
         </View>
-
         <View style={styles.addBtn}>
-          {/* <CustomButton
-            title="Cancel"
-            handlePress={handleCancelRaffle}
-            containerStyles={styles.cancelButton}
-          /> */}
           <TouchableOpacity
             onPress={handleCancelRaffle}
             activeOpacity={0.7}
-            className={`rounded py-2 px-4 border border-green`}>
-            <Text className="font-bold text-lg text-gray-400 text-center">Cancel</Text>
+            style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
           <CustomButton
             title="Proceed"
@@ -163,9 +152,14 @@ const styles = StyleSheet.create({
     width: 100,
     height: 40,
     marginHorizontal: 8,
-    justifyContent: 'center', // Center the text vertically
-    backgroundColor: 'white', // White background
-    borderColor: '#34D399', // Green border
-    borderWidth: 2, // Border width
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderColor: '#34D399',
+    borderWidth: 2,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: '#34D399',
+    textAlign: 'center',
   },
 });

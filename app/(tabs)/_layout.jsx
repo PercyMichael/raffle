@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, Image, Platform, KeyboardAvoidingView, Keyboard, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 
 import profileImg from "../../assets/images/profile.png";
 
 // Import your screens
-import Discover from '../(tabs)/discover';
+import Discover from './discover';
 import LiveRaffle from '../(tabs)/liveraffle';
 import Add from '../(tabs)/add';
-import Notifications from '../(tabs)/notifications';
+import Notifications from './notifications';
 import Profile from '../(tabs)/profile';
+import { useRoute } from '@react-navigation/native';
 
 // Create a Tab Navigator
 const Tab = createBottomTabNavigator();
 
 const HomeTabs = () => {
+  const route = useRoute();
+  
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
 
   const handleKeyboardDidShow = useCallback(() => {

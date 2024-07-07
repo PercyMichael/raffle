@@ -1,11 +1,29 @@
 import axios from "../utils/axios";
 import { getToken, setToken } from "./TokenService";
+import { login } from "../app/store/actions";
 import { Alert } from "react-native";
 
 
-export async function login(credentials) {
-  const { data } = await axios.post("/login", credentials);
-  await setToken(data.token);
+export async function loginAPI(credentials) {
+  try {
+    const { data } = await axios.post("/login", credentials);
+    await setToken(data.token);
+
+    // Assuming data contains token and user information
+    const { token, user } = data;
+
+    // Store token (e.g., in AsyncStorage)
+    await setToken(token);
+
+    // Dispatch the login action to update Redux state
+    // dispatch(login(token, user)); // Assuming dispatch is available in this scope
+    console.log(token);
+    console.log(user);
+    return { token, user }; // Return token and user data if needed
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error; // Rethrow the error to be handled by the caller
+  }
 }
 
 
@@ -46,6 +64,18 @@ export async function loadUser() {
   });
 
   return user;
+}
+
+export async function fetchRaffleAPI() {
+  const token = await getToken();
+
+  const { data: raffles } = await axios.get("/raffles", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return raffles;
 }
 
 export async function update_register(userData) {

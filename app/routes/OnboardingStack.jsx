@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import OnboardingScreen from '../onboarding/onboarding'
+// routes/OnboardingStack.jsx
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import OnboardingScreen from '../onboarding/onboarding';
 
-import React from 'react'
+const Stack = createStackNavigator();
 
-const OnboardingStack = () => {
-  return (
-    <OnboardingScreen />
-  )
-}
+const OnboardingStack = () => (
+  <Stack.Navigator initialRouteName="OnboardingScreen" screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
+  </Stack.Navigator>
+);
 
-export default OnboardingStack
-
-const styles = StyleSheet.create({})
+export default OnboardingStack;

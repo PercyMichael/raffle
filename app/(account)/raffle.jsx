@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import CustomButton from '../../components/CustomButton';
-import { loadRaffle, loadUser } from '../../services/AuthService';
+import { loadUser } from '../../services/AuthService';
+import { useRoute } from '@react-navigation/native';
 
 import Gamepad from "../../assets/images/pads.png";
 import ProfileImg from '../../assets/images/profile.png';
 import Laptop from "../../assets/images/laptop.png";
+import Header from '../../components/header';
 
-const Raffle = ({ navigation }) => {
+const Raffle = () => {
+  const route = useRoute();
+  const { data } = route.params;
+
   const [user, setUser] = useState(null);
-  const [raffles, setRaffles] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await loadUser();
+        setUser(user);
+      } catch (error) {
+        setError('Failed to load user data');
+      }
+    };
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const raffleData = await loadRaffle();
-      const userData = await loadUser();
-      setRaffles(raffleData);
-      setUser(userData);
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-      setError('Failed to fetch data. Please try again later.');
-    }
-  };
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, {}]}>
+      <Header title="Raffle Details" />
       <View style={styles.contentContainer}>
         {error ? (
           <View style={styles.errorContainer}>
@@ -37,33 +38,25 @@ const Raffle = ({ navigation }) => {
           </View>
         ) : (
           <>
-            <FlatList
-              data={raffles}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.raffleItem}>
-                  <Image source={Gamepad} style={styles.gamepadImage} />
-                  <View style={styles.listRaffleContainer}>
-                    {[1, 2, 3].map((index) => (
-                      <View key={index} style={styles.listRaffleItem}>
-                        <Image source={Gamepad} style={styles.gImage} />
-                      </View>
-                    ))}
-                  </View>
-                  <Text style={styles.raffleTitle}>{item.title}</Text>
-                  <Text>Description: {item.host_name}</Text>
-                  <Text>Description: {item.description}</Text>
-                  {/* Render other details */}
-                </View>
-              )}
-            />
-            <Image source={Gamepad} style={styles.gamepadImage} />
-            <View style={styles.listRaffleContainer}>
-              {[1, 2, 3].map((index) => (
-                <View key={index} style={styles.listRaffleItem}>
-                  <Image source={Gamepad} style={styles.gImage} />
-                </View>
-              ))}
+            <View style={styles.imageContainer}>
+              <Image source={Gamepad} style={styles.mainImage} />
+              <View style={styles.imageGrid}>
+                <Image source={Gamepad} style={styles.gridImage} />
+                <Image source={Gamepad} style={styles.gridImage} />
+                <Image source={Gamepad} style={styles.gridImage} />
+              </View>
+            </View>
+            <View style={styles.detailsContainer}>
+              <Text style={styles.detailText}>Raffle ID: {data.id}</Text>
+              <Text style={styles.detailText}>Organisation ID: {data.organisation_id}</Text>
+              <Text style={styles.detailText}>User ID: {data.user_id}</Text>
+              <Text style={styles.detailText}>Fundraising ID: {data.fundraising_id}</Text>
+              <Text style={styles.detailText}>Host Name: {data.host_name}</Text>
+              <Text style={styles.detailText}>Description: {data.description}</Text>
+              <Text style={styles.detailText}>Starting Date: {data.starting_date}</Text>
+              <Text style={styles.detailText}>Ending Date: {data.ending_date}</Text>
+              <Text style={styles.detailText}>State Raffle Hosted: {data.state_raffle_hosted}</Text>
+              <Text style={styles.detailText}>Approve Status: {data.approve_status}</Text>
             </View>
             <View style={styles.supportContainer}>
               <Text style={styles.supportTitle}>Do Good. Support Our Cause Today!</Text>
@@ -147,7 +140,7 @@ const Raffle = ({ navigation }) => {
       </View>
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -167,40 +160,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
-  raffleItem: {
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  mainImage: {
+    width: '100%',
+    height: 200,
     borderRadius: 5,
   },
-  raffleTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  gamepadImage: {
-    height: 200,
+  imageGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 10,
     width: '100%',
-    resizeMode: 'contain',
-    borderRadius: 15,
-    marginTop: 20,
+    gap: 4,
+  },
+  gridImage: {
+    width: '30%',
+    height: 100,
+    borderRadius: 8,
   },
   listRaffleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
   },
-  listRaffleItem: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+  detailsContainer: {
+    marginTop: 10,
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
-  gImage: {
-    height: 80,
-    width: 80,
-    resizeMode: 'contain',
+  detailText: {
+    fontSize: 16,
+    marginBottom: 5,
   },
   supportContainer: {
     marginTop: 20,
@@ -221,16 +220,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginLeft: 20
   },
   priceItemsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    marginTop: 10,
   },
   priceItem: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    backgroundColor: '#215273',
+    borderRadius: 4,
     padding: 10,
     alignItems: 'center',
     marginVertical: 8,
@@ -241,6 +240,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 2,
+    color: 'white'
   },
   statusContainer: {
     marginTop: 20,

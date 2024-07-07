@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Image, Platform, StyleSheet, Pressable, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 
-import { Link, useRouter } from 'expo-router';
 import Dropdown from '../../components/dropdown';
 import { register } from "../../services/AuthService";
+import { useRoute } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
@@ -23,7 +26,8 @@ const Register = () => {
   const [image, setImage] = useState('');
   const [errors, setErrors] = useState({});
 
-  const router = useRouter();
+  const navigation = useNavigation();
+  const router =useRouter();
 
   const handleSelect = (value) => {
     setSelectedValue(value);
@@ -79,6 +83,7 @@ const Register = () => {
 
       const user = await register(userData);
 
+      console.log('API response:', user);
       console.log('API response:', user);
 
       if (user) {
@@ -215,10 +220,13 @@ const Register = () => {
             containerStyles="mt-7"
           />
 
-          <View className="flex-row justify-center items-center gap-4 mt-2">
-            <Text className="font-bold text-lg">Already have an account?</Text>
-            <Link href="/signin" className="text-bgcolor text-lg font-bold underline">Login</Link>
+          <View style={styles.linkContainer}>
+            <Text style={styles.text}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
+              <Text style={styles.link}>Login</Text>
+            </TouchableOpacity>
           </View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -256,5 +264,22 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     marginTop: 10,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    marginBottom: 40,
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  link: {
+    color: 'green',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
   },
 });

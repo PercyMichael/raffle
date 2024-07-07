@@ -31,7 +31,6 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
           handleChangeText={(e) => setForm({ ...form, lastname: e })}
           otherStyles={{ marginTop: 7 }}
         />
-        {/* Other form fields... */}
 
         <TouchableOpacity onPress={() => navigation.push('/shipping')} style={styles.saveButton}>
           <Text style={styles.saveButtonText}>Save changes</Text>
