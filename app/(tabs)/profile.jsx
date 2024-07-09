@@ -50,7 +50,7 @@ const Menu = () => {
     // Perform any additional logout logic (e.g., clear local storage, navigate to login screen, etc.)
     // Example:
     // localStorage.removeItem('authToken');
-    console.log("data cleared", authToken);
+    // console.log("data cleared", authToken);
     // history.push('/login'); // Assuming 'history' is available for navigation
   };
 

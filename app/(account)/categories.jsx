@@ -1,24 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import axios from 'axios';
 import RNPickerSelect from 'react-native-picker-select';
+import { loadcategoriesAPI } from '../../services/AuthService';
 
-// Function to fetch categories
-async function fetchCategories() {
-  const token = await getToken();
-  const response = await axios.get('http://192.168.0.136:8000/api/categories', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-}
 
-// Example getToken function
-async function getToken() {
-  // Replace with your token retrieval logic
-  return 'your-token';
-}
 
 const CategoriesDropdown = ({ selectedCategory, setSelectedCategory }) => {
   const [categories, setCategories] = useState([]);
@@ -26,7 +11,7 @@ const CategoriesDropdown = ({ selectedCategory, setSelectedCategory }) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await fetchCategories();
+        const data = await loadcategoriesAPI();
         setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -35,6 +20,7 @@ const CategoriesDropdown = ({ selectedCategory, setSelectedCategory }) => {
 
     loadCategories();
   }, []);
+
 
   const dropdownItems = categories.map(category => ({
     label: category.category_name,

@@ -17,6 +17,8 @@ import Address from '../(account)/address';
 import Help from '../(account)/help';
 import LiveRaffle from '../(tabs)/liveraffle';
 import PaymentMethod from '../(account)/payment';
+import Settings from '../(account)/settings';
+import Notifications from '../(tabs)/notifications';
 // Other routes...
 
 const Stack = createStackNavigator();
@@ -39,6 +41,10 @@ const HomeStack = () => (
     <Stack.Screen name="Help" component={Help} />
     <Stack.Screen name="LiveRaffle" component={LiveRaffle} />
     <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
+    <Stack.Screen name="Settings" component={Settings} />
+    <Stack.Screen name="Notifications" component={Notifications} />
+
+
   </Stack.Navigator>
 );
 

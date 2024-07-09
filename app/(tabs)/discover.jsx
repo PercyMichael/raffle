@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
   },
   rafflesContainer: {
     marginBottom: 16,
+    marginHorizontal: 10,
   },
   sectionTitle: {
     fontSize: 18,
@@ -279,6 +280,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 8,
+    width: '100%'
   },
 });
 

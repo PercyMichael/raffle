@@ -83,7 +83,10 @@ const UpdateRegister = () => {
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'There was an error picking the image.');
+      Alert.alert('Error', 'There was an error picking the image.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
   };
 
@@ -120,7 +123,10 @@ const UpdateRegister = () => {
                   style={styles.imagePreview}
                   onError={(error) => {
                     console.error('Failed to load image:', form.image, error);
-                    Alert.alert('Error', 'Failed to load the image.');
+                    Alert.alert('Error', 'Failed to load the image.', [
+                      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+                      { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ],);
                   }}
                 />
               )}

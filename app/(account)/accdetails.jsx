@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, Link } from 'expo-router';
+import { View, Text, ScrollView, Alert, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { updateUserDetails, loadUser } from '../../services/AuthService';
+import Header from '../../components/header';
+import { useNavigation } from '@react-navigation/native';
 
-const AccountDetails = ({ backgroundColor, textColor }) => {
+const AccountDetails = () => {
+  const navigation = useNavigation();
+  const router = useRouter();
+
   const [form, setForm] = useState({
     firstname: '',
     lastname: '',
@@ -16,14 +20,47 @@ const AccountDetails = ({ backgroundColor, textColor }) => {
     newPassword: '',
     confirmPassword: ''
   });
+
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
+  const validateForm = () => {
+    let valid = true;
+    let errors = {};
 
-  async function handleSaveChanges() {
+    if (!form.firstname) {
+      errors.firstname = 'First name is required';
+      valid = false;
+    }
+
+    if (!form.lastname) {
+      errors.lastname = 'Last name is required';
+      valid = false;
+    }
+
+    if (!form.email) {
+      errors.email = 'Email is required';
+      valid = false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.email)) {
+      errors.email = 'Invalid email format';
+      valid = false;
+    }
+
+    if (form.newPassword && form.newPassword !== form.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+      valid = false;
+    }
+
+    setErrors(errors);
+    return valid;
+  };
+
+  const handleSaveChanges = async () => {
     setErrors({});
+    if (!validateForm()) return;
+
+    setLoading(true);
     try {
-      // Call the update function with the form data
       await updateUserDetails({
         firstname: form.firstname,
         lastname: form.lastname,
@@ -33,15 +70,16 @@ const AccountDetails = ({ backgroundColor, textColor }) => {
         newPassword: form.newPassword,
       });
 
-      // Fetch the updated user details
       const updatedUser = await loadUser();
       console.log(updatedUser);
 
-      // Handle the response (e.g., display a success message, navigate, etc.)
+      Alert.alert('Success', 'Your account details have been updated', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
       router.replace('/discover');
     } catch (e) {
-      console.error('Error:', e);  // Log the error for debugging
-
+      console.error('Error:', e);
       if (e.response) {
         const status = e.response.status;
         if (status === 400) {
@@ -59,97 +97,126 @@ const AccountDetails = ({ backgroundColor, textColor }) => {
       } else {
         console.error('Error setting up request:', e.message);
       }
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <View style={{ padding: 20 }}>
-          <View className="items-center justify-center">
-            <Text className="font-black mt-4 text-xl">Update Your Account</Text>
-          </View>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <Header title="Update Your Account" />
+      <View style={styles.formContainer}>
+        <FormField
+          title="First Name"
+          placeholder="First Name"
+          label={form.firstname}
+          handleChangeText={(text) => setForm({ ...form, firstname: text })}
+          otherStyles="mt-7"
+          errors={errors.firstname}
+        />
 
-          <FormField
-            title="First Name"
-            placeholder="First Name"
-            label={form.firstname}
-            handleChangeText={(text) => setForm({ ...form, firstname: text })}
-            otherStyles="mt-7"
-            errors={errors.firstname}
-          />
+        <FormField
+          title="Last Name"
+          placeholder="Last Name"
+          label={form.lastname}
+          handleChangeText={(text) => setForm({ ...form, lastname: text })}
+          otherStyles="mt-7"
+          errors={errors.lastname}
+        />
 
-          <FormField
-            title="Last Name"
-            placeholder="Last Name"
-            label={form.lastname}
-            handleChangeText={(text) => setForm({ ...form, lastname: text })}
-            otherStyles="mt-7"
-            errors={errors.lastname}
-          />
+        <FormField
+          title="Display Name"
+          placeholder="Optional"
+          label={form.displayName}
+          handleChangeText={(text) => setForm({ ...form, displayName: text })}
+          otherStyles="mt-7"
+          errors={errors.displayName}
+        />
 
-          <FormField
-            title="Display Name"
-            placeholder="Optional"
-            label={form.displayName}
-            handleChangeText={(text) => setForm({ ...form, displayName: text })}
-            otherStyles="mt-7"
-            errors={errors.displayName}
-          />
+        <FormField
+          title="Email address"
+          placeholder="Email Address"
+          label={form.email}
+          handleChangeText={(text) => setForm({ ...form, email: text })}
+          otherStyles="mt-7"
+          errors={errors.email}
+        />
 
-          <FormField
-            title="Email address"
-            placeholder="Email Address"
-            label={form.email}
-            handleChangeText={(text) => setForm({ ...form, email: text })}
-            otherStyles="mt-7"
-            errors={errors.email}
-          />
+        <FormField
+          title="Current password (leave blank to leave unchanged)"
+          placeholder="********"
+          label={form.currentPassword}
+          handleChangeText={(text) => setForm({ ...form, currentPassword: text })}
+          otherStyles="mt-7"
+          secureTextEntry={true}
+          errors={errors.currentPassword}
+        />
 
-          <FormField
-            title="Current password (leave blank to leave unchanged)"
-            placeholder="********"
-            label={form.currentPassword}
-            handleChangeText={(text) => setForm({ ...form, currentPassword: text })}
-            otherStyles="mt-7"
-            secureTextEntry={true}
-            errors={errors.currentPassword}
-          />
+        <FormField
+          title="New password (leave blank to leave unchanged)"
+          placeholder="********"
+          label={form.newPassword}
+          handleChangeText={(text) => setForm({ ...form, newPassword: text })}
+          otherStyles="mt-7"
+          secureTextEntry={true}
+          errors={errors.newPassword}
+        />
 
-          <FormField
-            title="New password (leave blank to leave unchanged)"
-            placeholder="********"
-            label={form.newPassword}
-            handleChangeText={(text) => setForm({ ...form, newPassword: text })}
-            otherStyles="mt-7"
-            secureTextEntry={true}
-            errors={errors.newPassword}
-          />
+        <FormField
+          title="Confirm Password"
+          placeholder="********"
+          label={form.confirmPassword}
+          handleChangeText={(text) => setForm({ ...form, confirmPassword: text })}
+          otherStyles="mt-7"
+          secureTextEntry={true}
+          errors={errors.confirmPassword}
+        />
 
-          <FormField
-            title="Confirm Password"
-            placeholder="********"
-            label={form.confirmPassword}
-            handleChangeText={(text) => setForm({ ...form, confirmPassword: text })}
-            otherStyles="mt-7"
-            secureTextEntry={true}
-            errors={errors.confirmPassword}
-          />
-
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
           <CustomButton
             title="Save Changes"
             handlePress={handleSaveChanges}
             containerStyles="mt-7"
           />
+        )}
 
-          <View className="flex-row justify-center items-center gap-4 mt-2">
-            <Text className="font-bold text-lg">Want to explore more?</Text>
-            <Link href="/discover" className="text-bgcolor font-bold text-lg underline ml-2">Discover</Link>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        {/* <View style={styles.linkContainer}>
+          <Text style={styles.text}>Want to explore more?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Discover')}>
+            <Text style={styles.link}>Discover</Text>
+          </TouchableOpacity>
+        </View> */}
+      </View>
+    </ScrollView>
   );
 };
 
 export default AccountDetails;
+
+const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    // padding: 20,
+  },
+  formContainer: {
+    padding: 20,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  link: {
+    color: 'green',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
+  },
+});

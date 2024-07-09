@@ -55,11 +55,17 @@ const CreateOrganisation = () => {
         console.log('Selected Image URI:', imageUri);
         setCoverImage(imageUri);
       } else {
-        console.log('Image picker was cancelled or no assets found');
+        console.log('Image picker was cancelled or no assets found', [
+          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],);
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'There was an error picking the image.');
+      Alert.alert('Error', 'There was an error picking the image.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
   };
 
@@ -90,11 +96,17 @@ const CreateOrganisation = () => {
         router.replace('/fundraising');
       } else {
         console.log('Organisation registration failed:', response.message);
-        Alert.alert('Error', `Failed to register organisation: ${response.message}`);
+        Alert.alert('Error', `Failed to register organisation: ${response.message}`, [
+          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],);
       }
     } catch (error) {
       console.error('Error registering organisation:', error);
-      Alert.alert('Error', 'Failed to register organisation. Please try again.');
+      Alert.alert('Error', 'Failed to register organisation. Please try again.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
   };
 
@@ -122,7 +134,10 @@ const CreateOrganisation = () => {
                 style={styles.imagePreview}
                 onError={() => {
                   console.error('Failed to load image:', coverImage);
-                  Alert.alert('Error', 'Failed to load the image.');
+                  Alert.alert('Error', 'Failed to load the image.', [
+                    { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                  ],);
                 }}
               />
             )}

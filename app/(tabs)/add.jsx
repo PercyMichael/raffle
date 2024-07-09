@@ -6,9 +6,13 @@ import CustomButton from '../../components/CustomButton';
 import { loadUser } from '../../services/AuthService';
 import { useRoute } from '@react-navigation/native';
 
+import { useNavigation } from '@react-navigation/native';
+
 const Add = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const navigation = useNavigation();
 
 
   const route = useRoute();
@@ -41,7 +45,7 @@ const Add = () => {
 
   function handleCancelRaffle() {
     console.log('Canceled raffle...');
-    router.push('/discover');
+    navigation.navigate('Discover')
   }
 
   return (
@@ -71,7 +75,7 @@ const Add = () => {
           <CustomButton
             title="Proceed"
             handlePress={handleCreateRaffle}
-            containerStyles={styles.customButton}
+            containerStyles={[styles.customButton, {borderRadius: 8}]}
           />
         </View>
       </View>
@@ -141,11 +145,8 @@ const styles = StyleSheet.create({
   },
   customButton: {
     padding: 10,
-    backgroundColor: '#6200EE',
-    borderRadius: 5,
-    flex: 1,
+    borderRadius: 8,
     marginHorizontal: 5,
-    alignItems: 'center',
     justifyContent: 'center',
   },
   cancelButton: {
@@ -156,6 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: '#34D399',
     borderWidth: 2,
+    borderRadius: 8
   },
   cancelButtonText: {
     fontSize: 16,

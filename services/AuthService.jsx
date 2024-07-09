@@ -15,10 +15,8 @@ export async function loginAPI(credentials) {
     // Store token (e.g., in AsyncStorage)
     await setToken(token);
 
-    // Dispatch the login action to update Redux state
-    // dispatch(login(token, user)); // Assuming dispatch is available in this scope
     console.log(token);
-    console.log(user);
+    // console.log(user);
     return { token, user }; // Return token and user data if needed
   } catch (error) {
     console.error('Login error:', error);
@@ -95,7 +93,7 @@ export async function update_register(userData) {
   }
 };
 
-export async function loadcategories() {
+export async function loadcategoriesAPI() {
   const token = await getToken();
   const { data: categories } = await axios.get("/categories", {
     headers: {
@@ -105,18 +103,16 @@ export async function loadcategories() {
 
   return categories;
 };
-
-export async function loadRaffle() {
+export async function loadTicketAPI() {
   const token = await getToken();
-
-  const { data: raffles } = await axios.get("/raffles", {
+  const { data: tickets } = await axios.get("/tickets", {
     headers: {
       Authorization: `Bearer ${token}`
     }
   });
 
-  return raffles;
-}
+  return tickets;
+};
 
 
 export async function create_organisation(orgData) {
@@ -137,9 +133,15 @@ export async function create_organisation(orgData) {
     console.error('Error creating organisation:', error);
     if (error.response) {
       console.error('API Response:', error.response.data);
-      Alert.alert('Error', `Failed to create organisation: ${error.response.data.message}`);
+      Alert.alert('Error', `Failed to create organisation: ${error.response.data.message}`, [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     } else {
-      Alert.alert('Error', 'Failed to create organisation. Please try again later.');
+      Alert.alert('Error', 'Failed to create organisation. Please try again later.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
     throw error;
   }
@@ -163,9 +165,15 @@ export async function create_fundraising(fundData) {
     console.error('Error creating fundraiser:', error);
     if (error.response) {
       console.error('API Response:', error.response.data);
-      Alert.alert('Error', `Failed to create fundraiser: ${error.response.data.message}`);
+      Alert.alert('Error', `Failed to create fundraiser: ${error.response.data.message}`, [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     } else {
-      Alert.alert('Error', 'Failed to create fundraiser. Please try again later.');
+      Alert.alert('Error', 'Failed to create fundraiser. Please try again later.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
     throw error;
   }
@@ -189,9 +197,15 @@ export async function createraffle(raffleData) {
     console.error('Error creating Raffle:', error);
     if (error.response) {
       console.error('API Response:', error.response.data);
-      Alert.alert('Error', `Failed to create Raffle: ${error.response.data.message}`);
+      Alert.alert('Error', `Failed to create Raffle: ${error.response.data.message}`, [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     } else {
-      Alert.alert('Error', 'Failed to create raffle. Please try again later.');
+      Alert.alert('Error', 'Failed to create raffle. Please try again later.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
     throw error;
   }
@@ -215,9 +229,15 @@ export async function create_ticket(raffleData) {
     console.error('Error creating Raffle:', error);
     if (error.response) {
       console.error('API Response:', error.response.data);
-      Alert.alert('Error', `Failed to create Raffle: ${error.response.data.message}`);
+      Alert.alert('Error', `Failed to create Raffle: ${error.response.data.message}`, [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     } else {
-      Alert.alert('Error', 'Failed to create raffle. Please try again later.');
+      Alert.alert('Error', 'Failed to create raffle. Please try again later.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
     throw error;
   }
