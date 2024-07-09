@@ -15,11 +15,13 @@ const Raffle = () => {
 
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const [ticket, setTickets] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const user = await loadUser();
+        
         setUser(user);
       } catch (error) {
         setError('Failed to load user data');

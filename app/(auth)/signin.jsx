@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import { login } from '../store/actions';
@@ -34,6 +34,11 @@ const SignIn = () => {
       navigation.navigate('HomeTabs');
     } catch (e) {
       console.error('Error:', e);  // Log the error for debugging
+      Alert.alert('Error registering', 'The password and email fields are required.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
+
 
       // Handle specific HTTP error status codes
       if (e.response) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, Platform, StyleSheet, Pressable, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Image, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,6 @@ import * as ImagePicker from 'expo-image-picker';
 
 import Dropdown from '../../components/dropdown';
 import { register } from "../../services/AuthService";
-import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 import FormField from "../../components/FormField";
@@ -27,7 +26,7 @@ const Register = () => {
   const [errors, setErrors] = useState({});
 
   const navigation = useNavigation();
-  const router =useRouter();
+  const router = useRouter();
 
   const handleSelect = (value) => {
     setSelectedValue(value);
@@ -51,7 +50,10 @@ const Register = () => {
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'There was an error picking the image.');
+      Alert.alert('Error', 'There was an error picking the image.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
   };
 
@@ -61,7 +63,10 @@ const Register = () => {
     if (password !== password_confirmation) {
       setErrors(prev => ({ ...prev, password_confirmation: "Passwords do not match." }));
       console.log("Passwords do not match");
-      Alert.alert('Passwords do not match');
+      Alert.alert('Passwords do not match', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
       return;
     }
 
@@ -84,7 +89,6 @@ const Register = () => {
       const user = await register(userData);
 
       console.log('API response:', user);
-      console.log('API response:', user);
 
       if (user) {
         console.log('User registered successfully:', user);
@@ -94,6 +98,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error('Error registering user:', error);
+
 
       if (error.response) {
         const status = error.response.status;

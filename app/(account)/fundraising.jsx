@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, StatusBar, ScrollView, Alert } from 'react-native';
+import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { useRouter } from 'expo-router';
-import { create_fundraising } from '../../services/AuthService'; 
+import { create_fundraising } from '../../services/AuthService';
 import Header from '../../components/header';// Adjust path as necessary
 
 const Fundraising = ({ backgroundColor = '#fff', textColor = '#000' }) => {
@@ -25,12 +25,18 @@ const Fundraising = ({ backgroundColor = '#fff', textColor = '#000' }) => {
 
     // Frontend validation
     if (!name || !co || !address || !city || !state || !zipcode || !phone) {
-      Alert.alert('Error', 'All fields except Address Line 2 are required.');
+      Alert.alert('Error', 'All fields except Address Line 2 are required.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
       return;
     }
 
     if (!checked) {
-      Alert.alert('Error', 'You must agree to the terms and conditions.');
+      Alert.alert('Error', 'You must agree to the terms and conditions.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
       return;
     }
 
@@ -57,24 +63,25 @@ const Fundraising = ({ backgroundColor = '#fff', textColor = '#000' }) => {
         router.replace('/addraffle');
       } else {
         console.log('Fundraiser registration failed:', response.message);
-        Alert.alert('Error', `Failed to register fundraising details: ${response.message}`);
+        Alert.alert('Error', `Failed to register fundraising details: ${response.message}`, [
+          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],);
       }
     } catch (error) {
       console.error('Error registering fundraising details:', error);
-      Alert.alert('Error', 'Failed to register fundraising details. Please try again.');
+      Alert.alert('Error', 'Failed to register fundraising details. Please try again.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
   };
 
   return (
     <ScrollView>
-      <Header />
+      <Header title="Fundraising Address" />
 
       <View style={styles.form}>
-        <View style={[styles.statusBar, { backgroundColor }]}>
-          <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
-          <Text style={[styles.statusTitle, { color: textColor }]}>Fundraising Check Address</Text>
-        </View>
-
         <View style={styles.formContainer}>
           <FormField
             title="Name"

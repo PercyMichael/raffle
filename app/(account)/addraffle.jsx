@@ -115,12 +115,18 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
     };
 
     if (!hostname || !description) {
-      Alert.alert('Error', 'All fields are required.');
+      Alert.alert('Error', 'All fields are required.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
       return;
     }
 
     if (!checked) {
-      Alert.alert('Error', 'You must agree to the terms and conditions.');
+      Alert.alert('Error', 'You must agree to the terms and conditions.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
       return;
     }
 
@@ -151,23 +157,24 @@ const AddRaffle = ({ backgroundColor = '#fff', textColor = '#000' }) => {
       if (response.message && response.message.includes('successfully')) {
         router.replace('/raffle');
       } else {
-        Alert.alert('Error', `Failed to register raffle1: ${response.message}`);
+        Alert.alert('Error', `Failed to register raffle1: ${response.message}`, [
+          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],);
       }
     } catch (error) {
       console.error('Error registering raffle:', error);
-      Alert.alert('Error', 'Failed to register raffle2. Please try again.');
+      Alert.alert('Error', 'Failed to register raffle2. Please try again.', [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],);
     }
   };
 
   return (
     <ScrollView>
-      <Header title="Create Raffle"/>
+      <Header title="Create your first raffle"/>
       <View style={styles.form}>
-        <View style={[styles.statusBar, {}]}>
-          <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
-          <Text style={[styles.statusTitle, { color: textColor }]}>Create your first raffle</Text>
-        </View>
-
         <View style={styles.formContainer}>
           <FormField
             title="Host name"

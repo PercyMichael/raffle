@@ -24,6 +24,16 @@ const BillingAddress = ({ backgroundColor, textColor }) => {
           handleChangeText={(e) => setForm({ ...form, firstname: e })}
           otherStyles={{ marginTop: 7 }} // No need to set width to 100% in React Native
         />
+        {/* <FormField
+          title="Email"
+          placeholder="Email Address"
+          label={}
+          handleChangeText={(text) => setEmail(text)}
+          otherStyles="mt-7"
+          keyboardType="email-address"
+          errors={}
+        /> */}
+
         <FormField
           title="Last Name"
           placeholder="Last Name"

@@ -1,47 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
-import Laptop from "../../assets/images/laptop.png";
 import CustomButton from '../../components/CustomButton';
-import { useNavigation } from '@react-navigation/native';
-import { useRouter } from 'expo-router'; // Adjust according to your navigation setup
-import { useRoute } from '@react-navigation/native';
+import Header from '../../components/header'; // Adjust path as needed
+import { useDispatch } from 'react-redux';
 
-const data = [{ label: 'Example Item', value: '1' }];
+import RaffleImg from "../../assets/images/raffle.png";
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { fetchRaffleAPI } from '../../services/AuthService';
+import { setSelectedRaffle } from '../store/actions';
 
 const LiveRaffle = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedValue, setSelectedValue] = useState(null);
   const [raffles, setRaffles] = useState([]);
 
-  const router = useRouter();
   const navigation = useNavigation();
-
+  const dispatch = useDispatch(); // Initialize dispatch
   const route = useRoute();
-  // const { id } = route.params;
-
-
 
   useEffect(() => {
+    const fetchRaffles = async () => {
+      try {
+        const raffles = await fetchRaffleAPI(); // Replace with your actual API call
+        setRaffles(raffles);
+      } catch (error) {
+        console.error('Failed to fetch raffles:', error);
+        // Handle error state or retry logic if needed
+      }
+    };
     fetchRaffles();
   }, []);
 
-  const fetchRaffles = async () => {
-    try {
-      // Replace with your actual fetch logic
-      const response = await fetch('http://192.168.0.136:8000/api/raffles');
-      const data = await response.json();
-      setRaffles(data);
-    } catch (error) {
-      console.error('Failed to fetch raffles:', error);
-    }
+  const navigateToLiveRaffle = (raffle) => {
+    dispatch(setSelectedRaffle(raffle.id)); // Dispatch the action to set the selected raffle ID
+    navigation.navigate('Raffle', { data: raffle });
   };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ padding: 20 }}>
-        <Text style={styles.headerText}>Live raffle</Text>
-      </View>
+      <Header title="Live Raffle" />
       <View>
         <View style={styles.searching}>
           <View style={styles.search}>
@@ -55,48 +52,44 @@ const LiveRaffle = () => {
           </View>
           <View style={styles.dropdown}>
             <View style={styles.item}>
-              <Text style={styles.textItem}>{data[0].label}</Text>
-              {selectedValue === data[0].value && (
-                <AntDesign
-                  style={styles.icon}
-                  color="black"
-                  name="Safety"
-                  size={20}
-                />
-              )}
+              <Text style={styles.textItem}>Example Item</Text>
             </View>
           </View>
         </View>
         <View style={styles.raffleContainer}>
-          {[...Array(4)].map((_, index) => (
-            <View key={index} style={styles.raffleItem}>
-              <Image source={Laptop} style={styles.image} />
+          {raffles.map((raffle, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.raffleItem}
+              onPress={() => navigateToLiveRaffle(raffle)}
+            >
+              <Image
+                source={RaffleImg} // Replace with your image source
+                style={styles.image}
+                resizeMode="cover"
+              />
               <View style={styles.raffleInfo}>
-                <Text style={styles.title}>Victor the greatest designer</Text>
-                <Text style={styles.subtitle}>UI/UX</Text>
-                <Text style={styles.website}>Victorakinola.com</Text>
-                <Text style={styles.time}>20h 33m</Text>
+                <Text style={styles.title}>{raffle.host_name}</Text>
+                <Text style={styles.subtitle}>{raffle.organisation_id}</Text>
+                <Text style={styles.subtitle}>{raffle.description}</Text>
+                <Text style={styles.time}>{raffle.ending_date}</Text>
                 <CustomButton
-                  title="View raffle"
-                  handlePress={() => router.push('/raffle')}
+                  title="View Raffle"
+                  handlePress={() => navigateToLiveRaffle(raffle)}
                   containerStyles={styles.buttonContainer}
                 />
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>
     </ScrollView>
   );
-}
+};
 
 export default LiveRaffle;
 
 const styles = StyleSheet.create({
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
   searching: {
     flexDirection: 'row',
     margin: 16,
@@ -112,8 +105,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 8,
-
   },
   icon: {
     marginRight: 3,
@@ -142,6 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 4,
+    margin: 15,
   },
   raffleItem: {
     width: '100%',
@@ -165,10 +157,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: '#555',
     fontWeight: 'bold',
-  },
-  website: {
-    fontSize: 12,
-    color: '#555',
   },
   time: {
     fontSize: 16,
