@@ -1,8 +1,9 @@
 // index.jsx
-import React from 'react';
-import { Provider } from 'react-redux';
-import store from './store';
-import AppNavigation from './routes/AppNavigation';
+import React from "react";
+import { Provider } from "react-redux";
+
+import AppNavigation from "./routes/AppNavigation";
+import { store } from "./store/store";
 
 const App = () => (
   <Provider store={store}>

@@ -1,7 +1,6 @@
-
 // store/reducers.jsx
-import { combineReducers } from 'redux';
-import { LOGIN, LOGOUT, SET_SELECTED_RAFFLE } from './actions';
+import { combineReducers } from "redux";
+import { LOGIN, LOGOUT, SET_SELECTED_RAFFLE } from "./actions";
 
 const initialState = {
   authToken: null,
@@ -24,11 +23,11 @@ const authReducer = (state = initialState, action) => {
         authToken: null,
         userData: {},
       };
-      case SET_SELECTED_RAFFLE:
-        return {
-          ...state,
-          selectedRaffleId: action.payload,
-        }
+    case SET_SELECTED_RAFFLE:
+      return {
+        ...state,
+        selectedRaffleId: action.payload,
+      };
     default:
       return state;
   }
@@ -37,4 +36,3 @@ const authReducer = (state = initialState, action) => {
 export default combineReducers({
   auth: authReducer,
 });
-

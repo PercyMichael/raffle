@@ -1,30 +1,42 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
 
-import Dropdown from '../../components/dropdown';
+import Dropdown from "../../components/dropdown";
 import { register } from "../../services/AuthService";
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
 
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import Logo from "../../assets/images/raffleitapp.png";
+import { setCredentials } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password_confirmation, setPasswordConfirmation] = useState("");
-  const [selectedValue, setSelectedValue] = useState('');
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState('');
-  const [username, setUsername] = useState('');
-  const [about, setAbout] = useState('');
-  const [image, setImage] = useState('');
+  const [selectedValue, setSelectedValue] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [about, setAbout] = useState("");
+  const [image, setImage] = useState("");
   const [errors, setErrors] = useState({});
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const router = useRouter();
 
@@ -43,17 +55,17 @@ const Register = () => {
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const imageUri = result.assets[0].uri;
-        console.log('Selected Image URI:', imageUri);
+        console.log("Selected Image URI:", imageUri);
         setImage(imageUri); // Correctly set the image state
       } else {
-        console.log('Image picker was cancelled or no assets found');
+        console.log("Image picker was cancelled or no assets found");
       }
     } catch (error) {
-      console.error('Error picking image:', error);
-      Alert.alert('Error', 'There was an error picking the image.', [
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],);
+      console.error("Error picking image:", error);
+      Alert.alert("Error", "There was an error picking the image.", [
+        { text: "Cancel", onPress: () => console.log("Cancel Pressed") },
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
     }
   };
 
@@ -61,12 +73,15 @@ const Register = () => {
     setErrors({});
 
     if (password !== password_confirmation) {
-      setErrors(prev => ({ ...prev, password_confirmation: "Passwords do not match." }));
+      setErrors((prev) => ({
+        ...prev,
+        password_confirmation: "Passwords do not match.",
+      }));
       console.log("Passwords do not match");
-      Alert.alert('Passwords do not match', [
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],);
+      Alert.alert("Passwords do not match", [
+        { text: "Cancel", onPress: () => console.log("Cancel Pressed") },
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
       return;
     }
 
@@ -75,7 +90,7 @@ const Register = () => {
         email,
         password,
         password_confirmation,
-        user_type: selectedValue === 'Host' ? 1 : 0,
+        user_type: selectedValue === "Host" ? 1 : 0,
         device_name: `${Platform.OS} ${Platform.Version}`,
         first_name,
         last_name,
@@ -84,34 +99,37 @@ const Register = () => {
         image,
       };
 
-      console.log('User data to register:', userData);
+      console.log("User data to register:", userData);
 
-      const user = await register(userData);
+      const { token, user } = await register(userData);
 
-      console.log('API response:', user);
+      console.log("API response:", user, token);
 
       if (user) {
-        console.log('User registered successfully:', user);
-        router.replace('/discover');
+        console.log("User registered successfully:", user);
+
+        dispatch(setCredentials({ token, user }));
+
+        // Navigate to the dISCOVERs screen after successful REGISTRATION
+        navigation.navigate("Discover");
       } else {
-        console.log('User registration did not return expected data.');
+        console.log("User registration did not return expected data.");
       }
     } catch (error) {
-      console.error('Error registering user:', error);
-
+      console.error("Error registering user:", error);
 
       if (error.response) {
         const status = error.response.status;
         if (status === 422) {
-          console.error('Validation errors:', error.response.data.errors);
+          console.error("Validation errors:", error.response.data.errors);
           setErrors(error.response.data.errors || {});
         } else {
           console.error(`Error ${status}:`, error.response.data);
         }
       } else if (error.request) {
-        console.error('No response received:', error.request);
+        console.error("No response received:", error.request);
       } else {
-        console.error('Error setting up request:', error.message);
+        console.error("Error setting up request:", error.message);
       }
     }
   }
@@ -122,8 +140,12 @@ const Register = () => {
         <View className="w-full h-full px-5">
           <View className="items-center justify-center">
             <Image source={Logo} />
-            <Text className="font-black mt-4 text-xl">Register to Raffleit</Text>
-            <Text className="mt-2 text-lg font-gray">Start raffling on raffleitapp</Text>
+            <Text className="font-black mt-4 text-xl">
+              Register to Raffleit
+            </Text>
+            <Text className="mt-2 text-lg font-gray">
+              Start raffling on raffleitapp
+            </Text>
           </View>
 
           <View style={styles.imagePicker}>
@@ -137,7 +159,7 @@ const Register = () => {
                   source={{ uri: image }}
                   style={styles.imagePreview}
                   onError={(error) => {
-                    console.error('Failed to load image:', image, error);
+                    console.error("Failed to load image:", image, error);
                   }}
                 />
               )}
@@ -191,9 +213,11 @@ const Register = () => {
           />
 
           <View>
-            <Text className="mt-4 font-bold text-base">Selected Value: {selectedValue}</Text>
+            <Text className="mt-4 font-bold text-base">
+              Selected Value: {selectedValue}
+            </Text>
             <Dropdown
-              options={['Host']}
+              options={["Host"]}
               onSelect={handleSelect}
               handleChangeText={(text) => setSelectedValue(text)}
               defaultValue="User"
@@ -227,11 +251,10 @@ const Register = () => {
 
           <View style={styles.linkContainer}>
             <Text style={styles.text}>Don't have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
               <Text style={styles.link}>Login</Text>
             </TouchableOpacity>
           </View>
-
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -242,26 +265,26 @@ export default Register;
 
 const styles = StyleSheet.create({
   imagePicker: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   imagePickerButton: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#E5E7EB',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#E5E7EB",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 10,
   },
   plusSign: {
     fontSize: 40,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   imagePickerText: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     marginBottom: 10,
   },
   imagePreview: {
@@ -271,19 +294,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   linkContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 30,
     marginBottom: 40,
   },
   text: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   link: {
-    color: 'green',
-    fontWeight: 'bold',
+    color: "green",
+    fontWeight: "bold",
     fontSize: 16,
     marginLeft: 5,
   },

@@ -10,11 +10,13 @@
 // // Create store with root reducer
 // export const store = createStore(RootReducer, applyMiddleware(thunk));
 
-
 // store/index.jsx
-import { legacy_createStore as createStore } from 'redux';
-import rootReducer from './reducers';
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./reducers"; // Ensure your rootReducer is set up correctly
 
-const store = createStore(rootReducer);
+// Create the store using configureStore
+const store = configureStore({
+  reducer: rootReducer,
+});
 
 export default store;

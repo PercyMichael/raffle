@@ -1,21 +1,34 @@
-import { View, Text, ScrollView, Image, StyleSheet, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { useRoute } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { logout } from '../store/actions';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useRoute } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+// import { logout } from '../store/actions';
 
 import { loadUser } from "../../services/AuthService";
-import CustomButton from '../../components/CustomButton';
+import CustomButton from "../../components/CustomButton";
 import profileImg from "../../assets/images/profile.png";
+import { increment } from "../store/counter";
+import { logout } from "../store/authSlice";
 
 const Menu = () => {
   const route = useRoute();
   // const { id } = route.params;
+  const { token, user } = useSelector((state) => state.auth);
+  const { counter } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
 
-  const [user, setUser] = useState(null);
+  const [users, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,7 +37,7 @@ const Menu = () => {
         const userData = await loadUser();
         setUser(userData);
       } catch (error) {
-        console.error('Failed to load user:', error);
+        console.error("Failed to load user:", error);
       } finally {
         setLoading(false);
       }
@@ -36,10 +49,10 @@ const Menu = () => {
   const handleHost = () => {
     if (user && user.user_type === 0) {
       // Code to handle becoming a host
-      console.log('Navigating to host registration...');
+      console.log("Navigating to host registration...");
     } else {
       // Code for already being a host
-      console.log('User is already a host.');
+      console.log("User is already a host.");
     }
   };
 
@@ -54,20 +67,38 @@ const Menu = () => {
     // history.push('/login'); // Assuming 'history' is available for navigation
   };
 
-
   return (
     <ScrollView>
       <View style={styles.container} className="p-4">
         <View style={styles.contmenu} className="p-2">
           <Text style={styles.more}>More</Text>
           <View style={styles.notificationIcon}>
-            <Pressable onPress={() => router.push('/settings')} style={styles.icon}>
+            <Pressable
+              onPress={() => router.push("/settings")}
+              style={styles.icon}
+            >
               <FontAwesome name="gear" color="gray" size={24} />
             </Pressable>
-            <Pressable onPress={() => router.push('/settings')} style={styles.icon}>
+            <Pressable
+              onPress={() => router.push("/settings")}
+              style={styles.icon}
+            >
               <Ionicons name="search" color="gray" size={24} />
             </Pressable>
           </View>
+        </View>
+
+        <View>
+          <Text>{counter}</Text>
+          <Text>Welcome, {user?.first_name ?? "No user"}!</Text>
+          <Text>Email, {user?.email ?? "No user email"}!</Text>
+          <Text>Your token: {token ?? "No user"}</Text>
+          <TouchableOpacity
+            onPress={() => dispatch(increment())}
+            style={{ padding: 10, backgroundColor: "blue", borderRadius: 5 }}
+          >
+            <Text style={{ color: "white" }}>Increment</Text>
+          </TouchableOpacity>
         </View>
 
         {loading ? (
@@ -79,7 +110,9 @@ const Menu = () => {
               style={styles.profileImage}
             />
             <View style={styles.textContainer}>
-              <Text style={styles.boldText}>{user.first_name} {user.last_name}</Text>
+              <Text style={styles.boldText}>
+                {user.first_name} {user.last_name}
+              </Text>
               <Text style={styles.grayText}>{user.email}</Text>
               {/* <Text style={styles.grayText}>{user.about}</Text> */}
             </View>
@@ -90,25 +123,37 @@ const Menu = () => {
 
         <View style={styles.aboutsect}>
           <View style={styles.ticket}>
-            <Pressable onPress={() => router.push('/settings')} style={styles.icon}>
+            <Pressable
+              onPress={() => router.push("/settings")}
+              style={styles.icon}
+            >
               <Ionicons name="ticket-outline" color="green" size={24} />
               <Text style={styles.menuText}>Raffles</Text>
             </Pressable>
           </View>
           <View style={styles.ticket}>
-            <Pressable onPress={() => router.push('/address')} style={styles.icon}>
+            <Pressable
+              onPress={() => router.push("/address")}
+              style={styles.icon}
+            >
               <Ionicons name="location" color="green" size={30} />
               <Text style={styles.menuText}>Address</Text>
             </Pressable>
           </View>
           <View style={styles.ticket}>
-            <Pressable onPress={() => router.push('/accdetails')} style={styles.icon}>
+            <Pressable
+              onPress={() => router.push("/accdetails")}
+              style={styles.icon}
+            >
               <Ionicons name="person-circle-outline" color="green" size={30} />
               <Text style={styles.menuText}>Account details</Text>
             </Pressable>
           </View>
           <View style={styles.ticket}>
-            <Pressable onPress={() => router.push('account/payment')} style={styles.icon}>
+            <Pressable
+              onPress={() => router.push("account/payment")}
+              style={styles.icon}
+            >
               <Ionicons name="wallet" color="green" size={30} />
               <Text style={styles.menuText}>Payment method</Text>
             </Pressable>
@@ -116,11 +161,17 @@ const Menu = () => {
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => router.push('/settings')} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => router.push("/settings")}
+            style={styles.button}
+          >
             <FontAwesome name="gear" color="gray" size={30} />
             <Text style={styles.buttonText}>Settings</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/help')} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => router.push("/help")}
+            style={styles.button}
+          >
             <Ionicons name="help-circle-outline" color="gray" size={30} />
             <Text style={styles.buttonText}>Help & support</Text>
           </TouchableOpacity>
@@ -129,7 +180,7 @@ const Menu = () => {
         <View style={styles.actionButtons}>
           {user && (
             <CustomButton
-              title={user.user_type === 1 ? 'Already host' : 'Become a host'}
+              title={user.user_type === 1 ? "Already host" : "Become a host"}
               handlePress={handleHost}
               containerStyle={styles.customButton}
               containerStyles="mt-7 px-2 py-1 w-3/4 rounded-lg"
@@ -139,7 +190,6 @@ const Menu = () => {
           <TouchableOpacity onPress={handleLogout} style={styles.button}>
             <Text style={styles.logoutBtn}>Logout</Text>
           </TouchableOpacity>
-
         </View>
       </View>
     </ScrollView>
@@ -152,101 +202,101 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   contmenu: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   notificationIcon: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   about: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
   },
   icon: {
-    margin: 6
+    margin: 6,
   },
   textContainer: {
     marginLeft: 10,
   },
   more: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   boldText: {
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   grayText: {
-    fontWeight: 'bold',
-    color: '#808080',
+    fontWeight: "bold",
+    color: "#808080",
   },
   profileImage: {
     height: 50,
     width: 50,
     borderRadius: 25,
-    resizeMode: 'contain'
+    resizeMode: "contain",
   },
   aboutsect: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: 10
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: 10,
   },
   ticket: {
-    width: '45%',
-    justifyContent: 'center',
-    backgroundColor: '#FDFDFD',
+    width: "45%",
+    justifyContent: "center",
+    backgroundColor: "#FDFDFD",
     borderRadius: 8,
     padding: 5,
-    margin: 5
+    margin: 5,
   },
   menuText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
     marginTop: 5,
-    textAlign: 'left'
+    textAlign: "left",
   },
   buttonContainer: {
     marginTop: 20,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 15,
     marginVertical: 5,
-    backgroundColor: '#EFEFEF',
+    backgroundColor: "#EFEFEF",
     borderRadius: 10,
   },
   buttonText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginLeft: 10
-  },
-  logoutBtn: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 18,
     marginLeft: 10,
-    color: 'red'
+  },
+  logoutBtn: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginLeft: 10,
+    color: "red",
   },
   actionButtons: {
     marginTop: 20,
-    alignItems: 'center',
-    gap: 10
+    alignItems: "center",
+    gap: 10,
   },
   customButton: {
     marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '80%',
-    paddingVertical: 15
+    justifyContent: "center",
+    alignItems: "center",
+    width: "80%",
+    paddingVertical: 15,
   },
   errorText: {
-    color: 'red',
-    textAlign: 'center',
+    color: "red",
+    textAlign: "center",
     marginTop: 20,
   },
 });

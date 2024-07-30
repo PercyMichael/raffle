@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch } from 'react-redux';
-import { login } from '../store/actions';
-import Logo from '../../assets/images/raffleitapp.png';
-import { useNavigation } from '@react-navigation/native';
-import FormField from '../../components/FormField';
-import CustomButton from '../../components/CustomButton';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+import { login } from "../store 2/actions";
+import Logo from "../../assets/images/raffleitapp.png";
+import { useNavigation } from "@react-navigation/native";
+import FormField from "../../components/FormField";
+import CustomButton from "../../components/CustomButton";
 import { loginAPI } from "../../services/AuthService";
+import { setCredentials } from "../store/authSlice";
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -20,43 +30,48 @@ const SignIn = () => {
     setErrors({});
 
     try {
-      const { token, userData } = await loginAPI({
+      const { token, user } = await loginAPI({
         email,
         password,
-        device_name: `${Platform.OS} ${Platform.Version}`
+        device_name: `${Platform.OS} ${Platform.Version}`,
       });
 
-      console.log('User:', userData); // Log user data for debugging
+      console.log("User:", user); // Log user data for debugging
 
-      dispatch(login(token, userData));
+      // dispatch(login(token, userData));
+
+      dispatch(setCredentials({ token, user }));
 
       // Navigate to the HomeTabs screen after successful login
-      navigation.navigate('HomeTabs');
+      navigation.navigate("HomeTabs");
     } catch (e) {
-      console.error('Error:', e);  // Log the error for debugging
-      Alert.alert('Error registering', 'The password and email fields are required.', [
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],);
-
+      console.error("Error:", e); // Log the error for debugging
+      Alert.alert(
+        "Error registering",
+        "The password and email fields are required.",
+        [
+          { text: "Cancel", onPress: () => console.log("Cancel Pressed") },
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ]
+      );
 
       // Handle specific HTTP error status codes
       if (e.response) {
         const status = e.response.status;
         if (status === 400) {
-          console.error('Bad Request:', e.response.data);
+          console.error("Bad Request:", e.response.data);
         } else if (status === 401) {
-          console.error('Unauthorized:', e.response.data);
+          console.error("Unauthorized:", e.response.data);
         } else if (status === 422) {
-          console.error('Validation Error:', e.response.data);
+          console.error("Validation Error:", e.response.data);
           setErrors(e.response.data.errors || {});
         } else {
           console.error(`Error ${status}:`, e.response.data);
         }
       } else if (e.request) {
-        console.error('No response received:', e.request);
+        console.error("No response received:", e.request);
       } else {
-        console.error('Error setting up request:', e.message);
+        console.error("Error setting up request:", e.message);
       }
     }
   };
@@ -103,7 +118,7 @@ const SignIn = () => {
 
           <View style={styles.linkContainer}>
             <Text style={styles.text}>Don't have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
               <Text style={styles.link}>Register</Text>
             </TouchableOpacity>
           </View>
@@ -116,45 +131,45 @@ const SignIn = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   logo: {
     width: 150,
     height: 150,
-    resizeMode: 'contain'
+    resizeMode: "contain",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10,
   },
   subtitle: {
     fontSize: 16,
     marginTop: 5,
-    color: '#888',
+    color: "#888",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   linkContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 30,
   },
   text: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   link: {
-    color: 'green',
-    fontWeight: 'bold',
+    color: "green",
+    fontWeight: "bold",
     fontSize: 16,
     marginLeft: 5,
   },
